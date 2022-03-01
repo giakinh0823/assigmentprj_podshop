@@ -12,7 +12,6 @@
         <title>Login Page</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://unpkg.com/flowbite@1.3.4/dist/flowbite.min.css" />
-
     </head>
     <body>
         <div class="w-full min-h-screen bg-white flex justify-center items-center">
@@ -31,11 +30,6 @@
                     </div>
                     <div class="flex items-baseline justify-between mt-4">
                         <button class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
-                        <div>
-                            <a href="/signup" class="text-sm text-blue-600 hover:underline">Signup</a>
-                            <span>/</span>
-                            <a href="#" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
-                        </div>
                     </div>
                 </form>
             </div>

@@ -8,9 +8,12 @@ package controller.admin.category;
 import controller.admin.auth.BaseAuthAdminController;
 import dal.auth.UserDBContext;
 import dal.product.CategoryDBContext;
+import dal.product.GroupDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.auth.User;
 import model.product.Category;
+import model.product.Group;
+import utils.Validate;
 
 /**
  *
@@ -46,10 +51,26 @@ public class CategoryController extends BaseAuthAdminController {
     @Override
     protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CategoryDBContext categoryDB = new CategoryDBContext();
-        ArrayList<Category> listCategory = categoryDB.list();
-        request.setAttribute("listCategory", listCategory);
-        request.getRequestDispatcher("/views/admin/category/category.jsp").forward(request, response);
+       try {
+           Validate validate = new Validate();
+           String search = validate.getField(request, "q", false);
+           String groupIdString = validate.getField(request, "group", false);
+           if(search==null) search = "";
+           int groupId = -1;
+           if(groupIdString != null) {
+               groupId = validate.fieldInt(groupIdString, "Error get field groupid");
+           }
+           CategoryDBContext categoryDB = new CategoryDBContext();
+           ArrayList<Category> listCategory = categoryDB.findMany(search, groupId);
+           GroupDBContext groupDB = new GroupDBContext();
+           ArrayList<Group> groups = groupDB.list();
+            
+           request.setAttribute("groups", groups);
+           request.setAttribute("listCategory", listCategory);
+           request.getRequestDispatcher("/views/admin/category/category.jsp").forward(request, response);
+       } catch (Exception ex) {
+           Logger.getLogger(CategoryController.class.getName()).log(Level.SEVERE, null, ex);
+       }
     }
     
     @Override

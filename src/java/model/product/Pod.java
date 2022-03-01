@@ -22,6 +22,24 @@ public class Pod extends BaseModel{
     private int discount;
     private int stateId;
     private State state;
+    private int categoryId;
+    private Category category;
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public String getName() {
         return name;

@@ -81,6 +81,34 @@
         <servlet-name>DeleteCategoryController</servlet-name>
         <servlet-class>controller.admin.category.DeleteCategoryController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StateController</servlet-name>
+        <servlet-class>controller.admin.state.StateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddStateController</servlet-name>
+        <servlet-class>controller.admin.state.AddStateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditStateController</servlet-name>
+        <servlet-class>controller.admin.state.EditStateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteStateController</servlet-name>
+        <servlet-class>controller.admin.state.DeleteStateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PodsController</servlet-name>
+        <servlet-class>controller.admin.product.PodsController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddPodsController</servlet-name>
+        <servlet-class>controller.admin.product.AddPodsController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MediaPodsController</servlet-name>
+        <servlet-class>controller.admin.product.MediaPodsController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -152,6 +180,34 @@
     <servlet-mapping>
         <servlet-name>DeleteCategoryController</servlet-name>
         <url-pattern>/admin/category/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StateController</servlet-name>
+        <url-pattern>/admin/state</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddStateController</servlet-name>
+        <url-pattern>/admin/state/add</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditStateController</servlet-name>
+        <url-pattern>/admin/state/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteStateController</servlet-name>
+        <url-pattern>/admin/state/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PodsController</servlet-name>
+        <url-pattern>/admin/pods</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddPodsController</servlet-name>
+        <url-pattern>/admin/pods/add</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MediaPodsController</servlet-name>
+        <url-pattern>/admin/pods/media/upload</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

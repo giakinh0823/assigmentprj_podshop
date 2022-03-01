@@ -50,7 +50,7 @@
                     <li>
                         <a href="/admin/state" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
-                            <span class="flex-1 ml-3 whitespace-nowrap">State</span>
+                            <span class="flex-1 ml-3 whitespace-nowrap">State Pod</span>
                         </a>
                     </li>
                     <li>

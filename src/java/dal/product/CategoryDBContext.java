@@ -20,6 +20,38 @@ import model.product.Group;
  * @author giaki
  */
 public class CategoryDBContext extends DBContext<Category> {
+    
+    
+    public ArrayList<Category> findMany(String value, int id) {
+        ArrayList<Category> categorys = new ArrayList<>();
+        GroupDBContext groupDB = new GroupDBContext();
+        String sql = "SELECT id, name, groupId FROM [category]\n"
+                + " WHERE name LIKE ? ";
+        if(id!=-1){
+            sql+=" AND groupId = ? ";
+        }
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, "%"+value+"%");
+            if(id!=-1){
+                statement.setInt(2, id);
+            }
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                Category category = new Category();
+                category.setId(result.getInt("id"));
+                category.setName(result.getString("name"));
+                category.setGroupId(result.getInt("groupId"));
+                Group group = groupDB.get(category.getGroupId());
+                category.setGroup(group);
+                categorys.add(category);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return categorys;
+    }
 
     @Override
     public ArrayList<Category> list() {
