@@ -38,7 +38,7 @@ public class ImageDBContext extends DBContext<Image> {
                 images.add(image);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(GroupDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return images;
     }
@@ -59,7 +59,7 @@ public class ImageDBContext extends DBContext<Image> {
                 images.add(image);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(GroupDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return images;
     }
@@ -82,7 +82,7 @@ public class ImageDBContext extends DBContext<Image> {
                 return image;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(GroupDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -102,20 +102,20 @@ public class ImageDBContext extends DBContext<Image> {
             ArrayList<Image> images = list();
             return images.get(images.size() - 1);
         } catch (SQLException ex) {
-            Logger.getLogger(GroupDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(GroupDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(GroupDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -126,10 +126,30 @@ public class ImageDBContext extends DBContext<Image> {
     public void update(Image model) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public void deleteByPod(int id) {
+        try {
+            String sql = "DELETE FROM [image]\n"
+                    + "WHERE podId = ? ";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     public void delete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            String sql = "DELETE FROM [image]\n"
+                    + "WHERE id = ? ";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImageDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

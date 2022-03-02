@@ -116,7 +116,13 @@
                                                 <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">${pod.getId()}</td>
                                                 <td class="py-4 px-6 text-sm font-medium text-gray-900">${pod.getName()}</td>
                                                 <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">${pod.getBrand()}</td>
-                                                <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">${pod.getPrice()}</td>
+                                                <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap" id="price-${pod.getId()}">${pod.getPrice()}
+                                                    <script>
+                                                        var price = Number.parseInt($("#price-${pod.getId()}").text());
+                                                        price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                                        $("#price-${pod.getId()}").text(price);
+                                                    </script>
+                                                </td>
                                                 <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">${pod.getQuantity()}</td>
                                                 <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">${pod.isIsSale()}</td>
                                                 <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">${pod.getDiscount()}</td>

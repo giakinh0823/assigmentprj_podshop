@@ -17,6 +17,7 @@ import model.product.Group;
 import model.product.Image;
 import model.product.Pod;
 import model.product.State;
+import utils.FileManage;
 
 /**
  *
@@ -192,10 +193,32 @@ public class PodDBContext extends DBContext<Pod> {
     public void update(Pod model) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    public void deleteByCategory(int id) {
+        try {
+            String sql = "DELETE FROM [pod]\n"
+                    + "WHERE categoryId = ? ";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public void delete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ImageDBContext imageDB = new ImageDBContext();
+        imageDB.deleteByPod(id);
+        try {
+            String sql = "DELETE FROM [pod]\n"
+                    + "WHERE id = ? ";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

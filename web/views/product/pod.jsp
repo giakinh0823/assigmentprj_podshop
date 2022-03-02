@@ -4,12 +4,20 @@
     Author     : giaki
 --%>
 
+<%@page import="model.product.Pod"%>
+<%@page import="model.product.Group"%>
+<%@page import="java.util.ArrayList"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Pod Page</title>
+        <%
+            ArrayList<Group> groups = (ArrayList<Group>) request.getAttribute("groups");
+            ArrayList<Pod> pods = (ArrayList<Pod>) request.getAttribute("pods");
+        %>
     </head>
     <body>
         <jsp:include page="../base/header.jsp" />
@@ -21,24 +29,17 @@
                         <a href="/" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                             HOME
                         </a>
+                        <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                            ALL
+                        </a>
                         <a href="/pod/sale" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                             SALE
                         </a>
-                        <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            MÁY POD SYSTEM
-                        </a>
-                        <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            MÁY POD SYSTEM
-                        </a>
-                        <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            MÁY POD SYSTEM
-                        </a>
-                        <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            MÁY POD SYSTEM
-                        </a>
-                        <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            MÁY POD SYSTEM
-                        </a>
+                        <c:forEach items="${groups}" var="group">
+                            <a href="/pods/group/${group.getId()}" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                ${group.getName()}
+                            </a>
+                        </c:forEach>
                         <a href="/news" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                             TIN TỨC
                         </a>
@@ -63,118 +64,22 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-4 gap-5">
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
+                    <c:forEach items="${pods}" var="pod">
+                        <div class="bg-white rounded-lg shadow-md flex flex-col">
+                            <a href="/pods/detail?id=${pod.getId()}">
+                                <img class="rounded-t-lg w-full h-[280px]" src="/assets/images/pods/${pod.getImages().get(1).getImage()}" alt="product image" />
                             </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
+                            <div class="px-5 pb-5 mt-4 flex flex-col flex-1">
+                                <a href="/pods/detail?id=${pod.getId()}">
+                                    <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">${pod.getName()}</h3>
+                                </a>
+                                <div class="flex justify-between items-center mt-auto">
+                                    <span class="text-xl font-medium text-red-500">$599</span>
+                                    <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="#">
-                            <img class="rounded-t-lg w-full" src="https://product.hstatic.net/1000250387/product/nevoks_feelin_mini_1_1b50230c0dd742b4983d5f0e2d5cc3d6_master.jpg" alt="product image" />
-                        </a>
-                        <div class="px-5 pb-5 mt-4">
-                            <a href="/pods">
-                                <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport</h3>
-                            </a>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-medium">$599</span>
-                                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
+                    </c:forEach> 
                 </div>
                 <div class="flex justify-center mt-10">
                     <nav aria-label="Page navigation example">

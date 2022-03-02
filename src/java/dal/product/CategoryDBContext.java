@@ -52,6 +52,30 @@ public class CategoryDBContext extends DBContext<Category> {
         }
         return categorys;
     }
+    
+    
+    public ArrayList<Category> getListByGroup(int id){
+        ArrayList<Category> categorys = new ArrayList<>();
+        GroupDBContext groupDB = new GroupDBContext();
+        String sql = "SELECT id, name, groupId FROM [category]\n"
+                + " WHERE groupId = ?";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                Category category = new Category();
+                category.setId(result.getInt("id"));
+                category.setName(result.getString("name"));
+                category.setGroupId(result.getInt("groupId"));
+                categorys.add(category);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return categorys;
+    }
 
     @Override
     public ArrayList<Category> list() {
@@ -184,6 +208,8 @@ public class CategoryDBContext extends DBContext<Category> {
 
     @Override
     public void delete(int id) {
+        PodDBContext podDB = new PodDBContext();
+        podDB.deleteByCategory(id);
         try {
             String sql = "DELETE FROM [category]\n"
                     + "WHERE id = ? ";

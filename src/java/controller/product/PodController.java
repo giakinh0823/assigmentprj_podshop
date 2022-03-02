@@ -5,12 +5,17 @@
  */
 package controller.product;
 
+import dal.product.GroupDBContext;
+import dal.product.PodDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.product.Group;
+import model.product.Pod;
 
 /**
  *
@@ -22,6 +27,12 @@ public class PodController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        PodDBContext podDB = new PodDBContext();
+        ArrayList<Pod> pods = podDB.list();
+        GroupDBContext groupDB = new GroupDBContext();
+        ArrayList<Group> groups = groupDB.list();
+        request.setAttribute("groups", groups);
+        request.setAttribute("pods", pods);
         request.getRequestDispatcher("/views/product/pod.jsp").forward(request, response);
     }
 

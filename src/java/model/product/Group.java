@@ -5,6 +5,7 @@
  */
 package model.product;
 
+import java.util.ArrayList;
 import model.BaseModel;
 
 /**
@@ -13,6 +14,17 @@ import model.BaseModel;
  */
 public class Group extends BaseModel{
     private String name;
+    ArrayList<Category> categories;
+
+    public ArrayList<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
+    
+    
 
     public String getName() {
         return name;

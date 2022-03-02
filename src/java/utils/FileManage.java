@@ -80,13 +80,18 @@ public class FileManage {
             for (Part part : parts) {
                 if (part.getName().equalsIgnoreCase("images")) {
                     String fileName = getFileName(part);
-                    fileNames.add(fileName);
                     String applicationPath = request.getServletContext().getRealPath("");
                     String basePath = applicationPath + File.separator + UPLOAD_DIR + File.separator;
                     InputStream inputStream = null;
                     OutputStream outputStream = null;
                     try {
                         File outputFilePath = new File(basePath + fileName);
+                        if (outputFilePath.exists()) {
+                            Random random = new Random();
+                            fileName = random.nextInt(1000000000) + "-" + fileName.replaceAll("\\s+", "-");
+                            outputFilePath = new File(basePath + fileName);
+                        }
+                        fileNames.add(fileName);
                         inputStream = part.getInputStream();
                         outputStream = new FileOutputStream(outputFilePath);
                         int read = 0;

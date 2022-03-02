@@ -3,13 +3,18 @@
     Created on : Feb 24, 2022, 5:10:06 PM
     Author     : giaki
 --%>
-
+<%@page import="model.product.Group"%>
+<%@page import="java.util.ArrayList"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <jsp:include page="headerImport.jsp" />
+        <%
+            ArrayList<Group> groups = (ArrayList<Group>) request.getAttribute("groups");
+        %>
     </head>
     <body>
         <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded">
@@ -57,78 +62,48 @@
                         </button>
                     </div>
                 </div>
-                <div class="hidden justify-between items-center w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
-                    <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
-                        <li>
-                            <a href="#" class="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page">Home</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0">About</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0">Services</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0">Pricing</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0">Contact</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </nav>
         <div class="bg-gray-100 w-full">
             <div class="flex justify-center items-center">
                 <ul class="flex justify-center items-center" id="navGroupPod">
                     <li class="relative">
-                        <a href="#" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200">HOME</a>
+                        <a href="/pods" class="font-medium block py-4 px-6 nav-link hover:bg-gray-200 uppercase">POD</a>
                     </li>
-                    <li class="relative">
-                        <a href="#" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200">SALE</a>
-                    </li>
-                    <li class="relative">
-                        <a href="#" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200">MÁY POD SYSTEM</a>
-                    </li>
-                    <li class="relative" onmouseover="showMenuPod(this)" onmouseout="hiddenMenuPod(this)">
-                        <a href="#" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200">TINH DẦU</a>
-                        <div class="transition duration-150 ease-in-out absolute top-[100%] left-[0] bg-gray-100 menuPodItem" style="display: none">
-                            <ul class="pt-2 px-2">
-                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                    <a href="/" class="dropdown_menu-link block py-4 px-12 hover:bg-gray-200">TINH DẦU 1</a>
+                    <c:forEach items="${groups}" var="group">
+                        <c:choose>
+                            <c:when test="${group.getCategories().size()>0}">
+                                <li class="relative z-10" onmouseover="showMenuPod(this)" onmouseout="hiddenMenuPod(this)">
+                                    <a href="/pods/group/${group.getId()}" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200 uppercase">${group.getName()}</a>
+                                    <div class="transition duration-150 ease-in-out absolute top-[100%] left-[0] bg-gray-100 menuPodItem" style="display: none">
+                                        <ul class="pt-2 px-2">
+                                            <c:forEach items="${group.getCategories()}" var="category">
+                                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
+                                                    <a href="/pods/category/${category.getId()}" class="dropdown_menu-link block py-3 px-8 hover:bg-gray-200">${category.getName()}</a>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </div>
                                 </li>
-                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                    <a href="/" class="dropdown_menu-link block py-4 px-12 hover:bg-gray-200">TINH DẦU 1</a>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="relative">
+                                    <a href="/pods/${group.getId()}" class="font-medium block py-4 px-6 nav-link hover:bg-gray-200 uppercase">${group.getName()}</a>
                                 </li>
-                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                    <a href="/" class="dropdown_menu-link block py-4 px-12 hover:bg-gray-200">TINH DẦU 1</a>
-                                </li>
-                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                    <a href="/" class="dropdown_menu-link block py-4 px-12 hover:bg-gray-200">TINH DẦU 1</a>
-                                </li>
-                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                    <a href="/" class="dropdown_menu-link block py-4 px-12 hover:bg-gray-200">TINH DẦU 1</a>
-                                </li>
-                                <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                    <a href="/" class="dropdown_menu-link block py-4 px-12 hover:bg-gray-200">TINH DẦU 1</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="mr-8 relative">
-                        <a href="#" class="font-medium block py-4 px-10 hover:bg-gray-200">POD DÙNG 1 LẦN</a>
-                    </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
                 </ul>
             </div>
         </div>
 
         <script>
             function showMenuPod(element) {
-                $(element).find(".menuPodItem").css("display" ,"block");
+                $(element).find(".menuPodItem").css("display", "block");
             }
 
             function hiddenMenuPod(element) {
-                $(element).find(".menuPodItem").css("display" ,"none");
+                $(element).find(".menuPodItem").css("display", "none");
             }
         </script>
         <jsp:include page="footerImport.jsp" />

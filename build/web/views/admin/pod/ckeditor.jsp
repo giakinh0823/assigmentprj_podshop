@@ -59,10 +59,10 @@
         }
     </style>
     <body>
-        <div class="centered">
-            <div class="row row-editor">
-                <div class="editor-container">
-                    <div class="editor"></div>
+        <div class="centered w-full">
+            <div class="row row-editor w-full">
+                <div class="editor-container w-full">
+                    <div class="editor w-full"></div>
                 </div>
             </div>
         </div>

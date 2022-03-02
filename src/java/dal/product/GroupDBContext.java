@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.product.Category;
 import model.product.Group;
 
 /**
@@ -24,6 +25,7 @@ public class GroupDBContext extends DBContext<Group> {
     @Override
     public ArrayList<Group> list() {
         ArrayList<Group> groups = new ArrayList<>();
+        CategoryDBContext categoryDB = new CategoryDBContext();
         String sql = "SELECT id, name FROM [group]";
         PreparedStatement statement = null;
         try {
@@ -33,6 +35,8 @@ public class GroupDBContext extends DBContext<Group> {
                 Group group = new Group();
                 group.setId(result.getInt("id"));
                 group.setName(result.getString("name"));
+                ArrayList<Category> categories = categoryDB.getListByGroup(group.getId());
+                group.setCategories(categories);
                 groups.add(group);
             }
         } catch (SQLException ex) {
@@ -43,6 +47,7 @@ public class GroupDBContext extends DBContext<Group> {
 
     @Override
     public Group get(int id) {
+        CategoryDBContext categoryDB = new CategoryDBContext();
         String sql = "SELECT id, name FROM [group]\n"
                 + " WHERE id = ?";
         PreparedStatement statement = null;
@@ -54,6 +59,8 @@ public class GroupDBContext extends DBContext<Group> {
                 Group group = new Group();
                 group.setId(result.getInt("id"));
                 group.setName(result.getString("name"));
+                ArrayList<Category> categories = categoryDB.getListByGroup(group.getId());
+                group.setCategories(categories);
                 return group;
             }
         } catch (SQLException ex) {
