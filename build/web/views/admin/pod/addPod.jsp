@@ -56,7 +56,7 @@
                     <div class="flex w-full">
                         <div>
                             <div class="flex justify-center items-center">
-                                <form action="/admin/category/add" style="min-width: 500px" id="form-category-add">
+                                <form action="/admin/pods/add" style="min-width: 500px" id="form-pod-add">
                                     <div id="showErrorForm" class="hidden">
                                         <div id="contentErrorForm" class="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 mb-3" role="alert">
                                         </div>
@@ -95,7 +95,7 @@
                                         <input required type="number" id="quantity" name="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                     </div>
                                     <div class="mb-6">
-                                        <label for="discount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">quantity</label>
+                                        <label for="discount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">discount</label>
                                         <input required type="number" id="discount" name="discount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                     </div>
                                     <div class="mb-6">
@@ -107,12 +107,20 @@
                                         </select>
                                     </div>
                                     <div class="mb-6">
-                                        <input id="isSale" aria-describedby="isSale" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500">
-                                        <label for="isSale" name="isSale" value="isSale" class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">is sale</label>
+                                        <input id="isSale" name="isSale" value="true" aria-describedby="isSale" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500">
+                                        <label for="isSale" class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">is sale</label>
                                     </div>
                                     <div class="mb-6">
                                         <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Description</label>
                                         <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Description..."></textarea>
+                                    </div>
+                                    <div class="hidden mb-6">
+                                        <label for="content" class="block mb-2 text-sm font-medium text-gray-900">Description</label>
+                                        <textarea id="content" name="content" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Description..."></textarea>
+                                    </div>
+                                    <div class="mb-6">
+                                        <label class="block mb-2 text-sm font-medium text-gray-900" for="images">Upload image</label>
+                                        <input id="images"  accept="image/png, image/jpeg" type="file" name="images" multiple multiple class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none focus:border-transparent" >
                                     </div>
                                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Add</button>
                                 </form>
@@ -125,6 +133,7 @@
                 </div>
             </div>
         </div>
+         <jsp:include page="../base/footer.jsp" />
         <script>
             const categorys = [
                 <%for (Category category : listCategory) {%>
@@ -152,6 +161,54 @@
                     }
                 })
             })
+           $("#form-pod-add").on("submit", function(e){
+               e.preventDefault();
+               const new_data = {
+                   category: $("#category").val(),
+                   name: $("#name").val(),
+                   brand: $("#brand").val(),
+                   price: $("#price").val(),
+                   quantity: $("#quantity").val(),
+                   discount: $("#discount").val(),
+                   state: $("#state").val(),
+                   description: $("#description").val(),
+                   isSale: $("#isSale").is(':checked'),
+                   content: data,
+                   images: $("#images").val(),
+               }
+               console.log(new_data);
+               $.ajax({
+                    method: "POST",
+                    url: "/admin/pods/add",
+                    miniType: "multipart/form-data",
+                    data: new FormData(document.getElementById("form-pod-add")),
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                }).done(function (data) {
+                    if (data?.detailMessage) {
+                        $("#showSuccessForm").addClass("hidden")
+                        $('#contentErrorForm').text(data?.detailMessage);
+                        $("#showErrorForm").removeClass("hidden")
+                    } else{
+                        location.pathname = "/admin/pods";
+                    }
+                })
+                
+//               $.ajax({
+//                    method: "POST",
+//                    url: "/admin/pods/add",
+//                    data: new_data,
+//                }).done(function (data) {
+//                    if (data?.detailMessage) {
+//                        $("#showSuccessForm").addClass("hidden")
+//                        $('#contentErrorForm').text(data?.detailMessage);
+//                        $("#showErrorForm").removeClass("hidden")
+//                    } else{
+//                        location.pathname = "/admin/pods";
+//                    }
+//                })
+           })
             
         </script>
     </body>

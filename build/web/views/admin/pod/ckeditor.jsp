@@ -68,6 +68,7 @@
         </div>
         <script src="/assets/js/ckeditor/build/ckeditor.js"></script>
         <script>
+            let data;
             const watchdog = new CKSource.EditorWatchdog();
             window.watchdog = watchdog;
 
@@ -84,7 +85,9 @@
                         })
                         .then(editor => {
                             editor.model.document.on('change:data', () => {
-                                content = editor.getData();
+                                let content = editor.getData();
+                                data = content;
+                                $("#content").val(content);
                                 console.log(content);
                             })
                             return editor;

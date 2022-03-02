@@ -5,6 +5,7 @@
  */
 package model.product;
 
+import java.util.ArrayList;
 import model.BaseModel;
 
 /**
@@ -24,6 +25,15 @@ public class Pod extends BaseModel{
     private State state;
     private int categoryId;
     private Category category;
+    private ArrayList<Image> images;
+
+    public ArrayList<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(ArrayList<Image> images) {
+        this.images = images;
+    }
 
     public int getCategoryId() {
         return categoryId;

@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.product.Category;
 import model.product.Group;
+import model.product.Image;
 import model.product.Pod;
 import model.product.State;
 
@@ -27,6 +28,7 @@ public class PodDBContext extends DBContext<Pod> {
     public ArrayList<Pod> list() {
         ArrayList<Pod> pods = new ArrayList<>();
         CategoryDBContext categoryDB = new CategoryDBContext();
+        ImageDBContext imageDB = new ImageDBContext();
         StateDBContext stateDB = new StateDBContext();
         String sql = "SELECT [id]\n"
                 + "      ,[name]\n"
@@ -58,7 +60,7 @@ public class PodDBContext extends DBContext<Pod> {
                 pod.setIsSale(result.getBoolean("isSale"));
                 pod.setDiscount(result.getInt("discount"));
                 pod.setCreated_at(result.getTimestamp("created_at"));
-                pod.setCreated_at(result.getTimestamp("created_at"));
+                pod.setUpdated_at(result.getTimestamp("updated_at"));
                 pod.setCategoryId(result.getInt("categoryId"));
                 pod.setStateId(result.getInt("state"));
                 Category category = categoryDB.get(pod.getCategoryId());
@@ -66,6 +68,9 @@ public class PodDBContext extends DBContext<Pod> {
                 State state = stateDB.get(pod.getStateId());
                 pod.setState(state);
                 pods.add(pod);
+                
+                ArrayList<Image> images = imageDB.findByPod(pod.getId());
+                pod.setImages(images);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -76,6 +81,7 @@ public class PodDBContext extends DBContext<Pod> {
     @Override
     public Pod get(int id) {
         CategoryDBContext categoryDB = new CategoryDBContext();
+        ImageDBContext imageDB = new ImageDBContext();
         StateDBContext stateDB = new StateDBContext();
         String sql = "SELECT [id]\n"
                 + "      ,[name]\n"
@@ -90,10 +96,12 @@ public class PodDBContext extends DBContext<Pod> {
                 + "      ,[updated_at]\n"
                 + "      ,[categoryId]\n"
                 + "      ,[state]\n"
-                + "  FROM [pod]";
+                + "  FROM [pod]\n"
+                + " WHERE id = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Pod pod = new Pod();
@@ -114,6 +122,9 @@ public class PodDBContext extends DBContext<Pod> {
                 pod.setCategory(category);
                 State state = stateDB.get(pod.getStateId());
                 pod.setState(state);
+                
+                ArrayList<Image> images = imageDB.findByPod(pod.getId());
+                pod.setImages(images);
                 return pod;
             }
         } catch (SQLException ex) {

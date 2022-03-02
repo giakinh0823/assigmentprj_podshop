@@ -24,7 +24,8 @@ public class Validate {
         } catch (Exception e) {
             if (value == null || value.trim().isEmpty()) {
                 if (required) {
-                    throw new Exception("Field "+fieldName+" is required");
+                    String error = "Field "+fieldName+" is required";
+                    throw new Exception(error);
                 } else {
                     value = null; // Make empty string null so that you don't need to hassle with equals("") afterwards.
                 }
@@ -38,7 +39,8 @@ public class Validate {
         value = request.getPart(fieldName);
         if (value == null) {
             if (required) {
-                throw new Exception("Field "+fieldName+" is required");
+                String error = "Field "+fieldName+" is required";
+                throw new Exception(error);
             } else {
                 value = null; // Make empty string null so that you don't need to hassle with equals("") afterwards.
             }
@@ -51,7 +53,8 @@ public class Validate {
         value = request.getParameter(fieldName);
         if (value == null || value.trim().isEmpty()) {
             if (required) {
-                throw new Exception("Field is required");
+                String error = "Field "+fieldName+" is required";
+                throw new Exception(error);
             } else {
                 value = null; // Make empty string null so that you don't need to hassle with equals("") afterwards.
             }

@@ -13,6 +13,15 @@ public class MediaImage {
     private int uploaded = 1;
     private String filename;
     private String error = null;
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public int getUploaded() {
         return uploaded;

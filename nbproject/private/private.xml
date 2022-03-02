@@ -2,6 +2,24 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/web/views/admin/state/addState.jsp</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/web/views/admin/pod/podDetail.jsp</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/controller/admin/product/AddPodsController.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/web/views/admin/pod/addPod.jsp</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/dal/product/GroupDBContext.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/dal/product/ImageDBContext.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/controller/admin/product/PodsController.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/controller/admin/group/EditGroupController.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/web/views/admin/pod/pods.jsp</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/model/product/Pod.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/controller/admin/product/PodDetailController.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/web/WEB-INF/web.xml</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/dal/product/PodDBContext.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/controller/admin/product/MediaPodsController.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/model/product/Image.java</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/web/views/admin/pod/ckeditor.jsp</file>
+            <file>file:/D:/FPT%20UNIVERSITY/STUDY/KY%204/JAVA%20WEB%20TEST/WWW/pod_tuandung/src/java/utils/FileManage.java</file>
+        </group>
     </open-files>
 </project-private>

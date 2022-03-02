@@ -13,7 +13,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 /**
@@ -36,7 +39,7 @@ public class FileManage {
             File outputFilePath = new File(Paths.get(path.toString(), file).toString());
             if (outputFilePath.exists()) {
                 Random random = new Random();
-                file = random.nextInt(1000000000)+"-"+file.replaceAll("\\s+", "-");
+                file = random.nextInt(1000000000) + "-" + file.replaceAll("\\s+", "-");
                 outputFilePath = new File(Paths.get(path.toString(), file).toString());
             }
             inputStream = part.getInputStream();
@@ -68,5 +71,53 @@ public class FileManage {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<String> uploadFiles(String UPLOAD_DIR, HttpServletRequest request) {
+        List<String> fileNames = new ArrayList<String>();
+        try {
+            List<Part> parts = (List<Part>) request.getParts();
+            for (Part part : parts) {
+                if (part.getName().equalsIgnoreCase("images")) {
+                    String fileName = getFileName(part);
+                    fileNames.add(fileName);
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    String basePath = applicationPath + File.separator + UPLOAD_DIR + File.separator;
+                    InputStream inputStream = null;
+                    OutputStream outputStream = null;
+                    try {
+                        File outputFilePath = new File(basePath + fileName);
+                        inputStream = part.getInputStream();
+                        outputStream = new FileOutputStream(outputFilePath);
+                        int read = 0;
+                        final byte[] bytes = new byte[1024];
+                        while ((read = inputStream.read(bytes)) != -1) {
+                            outputStream.write(bytes, 0, read);
+                        }
+                    } catch (Exception ex) {
+                        fileName = null;
+                    } finally {
+                        if (outputStream != null) {
+                            outputStream.close();
+                        }
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            fileNames = null;
+        }
+        return fileNames;
+    }
+
+    private String getFileName(Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 }

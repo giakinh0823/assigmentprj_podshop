@@ -7,6 +7,7 @@ package controller.admin.product;
 
 import controller.admin.auth.BaseAuthAdminController;
 import dal.auth.UserDBContext;
+import dal.product.PodDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -42,6 +43,8 @@ public class PodsController extends BaseAuthAdminController {
 
     @Override
     protected void processGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PodDBContext podDB = new PodDBContext();
+        request.setAttribute("pods", podDB.list());
         request.getRequestDispatcher("/views/admin/pod/pods.jsp").forward(request, response);
     }
 

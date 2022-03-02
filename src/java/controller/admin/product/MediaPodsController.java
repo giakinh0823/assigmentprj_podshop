@@ -61,7 +61,8 @@ public class MediaPodsController extends BaseAuthAdminController {
                 filename = fileManage.upLoad(part, folder);
             }
             MediaImage mediaImage = new MediaImage();
-            mediaImage.setFilename("/assets/images/pods/"+filename);
+            mediaImage.setFilename(filename);
+            mediaImage.setUrl("/assets/images/pods/"+filename);
             String json = new Gson().toJson(mediaImage);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
