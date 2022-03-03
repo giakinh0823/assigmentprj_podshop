@@ -4,6 +4,8 @@
     Author     : giaki
 --%>
 
+<%@page import="model.product.Category"%>
+<%@page import="model.common.Pagination"%>
 <%@page import="model.product.Pod"%>
 <%@page import="model.product.Group"%>
 <%@page import="java.util.ArrayList"%>
@@ -17,6 +19,8 @@
         <%
             ArrayList<Group> groups = (ArrayList<Group>) request.getAttribute("groups");
             ArrayList<Pod> pods = (ArrayList<Pod>) request.getAttribute("pods");
+            Pagination pagination = (Pagination) request.getAttribute("pagination");
+            ArrayList<Category> categorys = (ArrayList<Category>) request.getAttribute("categorys");
         %>
     </head>
     <body>
@@ -47,11 +51,28 @@
                 </div>
             </div>
             <div class="w-full p-5">
-                <div class="w-full flex justify-between items-center mb-4">
+                <div class="w-full flex items-center mb-4">
                     <div>
-                        <h3 class="text-2xl font-medium">PHỤ KIỆN</h3>
+                        <form action="/pods" method="GET" class="flex items-center">
+                            <div class="relative mt-1">
+                                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                                </div>
+                                <input type="text" name="q" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5" placeholder="Search for items">
+                            </div>
+                            <select id="group" name="group" class="ml-3 min-w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="all">Group</option>
+                                <c:forEach items="${groups}" var="group">
+                                    <option value="${group.id}">${group.getName()}</option>
+                                </c:forEach>
+                            </select>
+                            <select id="category" name="category" class="ml-3 min-w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="all">category</option>
+                            </select>
+                            <button type="submit" class="ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">search</button>
+                        </form>
                     </div>
-                    <div>
+                    <div class="ml-auto">
                         <select id="countries" class="min-w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option class="py-2 px-3">Sắp xếp</option>
                             <option class="py-2 px-3">Tên: A-Z</option>
@@ -81,35 +102,103 @@
                         </div>
                     </c:forEach> 
                 </div>
-                <div class="flex justify-center mt-10">
+                <div class="mt-10 mb-5 w-full flex justify-center">
                     <nav aria-label="Page navigation example">
                         <ul class="inline-flex -space-x-px">
                             <li>
-                                <a href="#" class="py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                                <a href="/pods?page=<%=pagination.getPrev()%>" data="<%=pagination.getPrev()%>" class="pagination-link py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
                             </li>
+                            <c:if test="${pagination.getPageIndex()>2}">
+                                <li>
+                                    <a href="/pods?page=<%=pagination.getPageIndex() - 2%>" data="<%=pagination.getPageIndex() - 2%>" class="pagination-link py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><%=pagination.getPageIndex() - 2%></a>
+                                </li>
+                            </c:if>
+                            <c:if test="${pagination.getPageIndex()>1}">
+                                <li>
+                                    <a href="/pods?page=<%=pagination.getPageIndex() - 1%>" data="<%=pagination.getPageIndex() - 1%>" class="pagination-link py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><%=pagination.getPageIndex() - 1%></a>
+                                </li>
+                            </c:if>
                             <li>
-                                <a href="#" class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+                                <a href="/pods?page=<%=pagination.getPageIndex()%>" data="<%=pagination.getPageIndex()%>" aria-current="page" class="pagination-link py-2 px-3 text-blue-600 bg-blue-50 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"><%=pagination.getPageIndex()%></a>
                             </li>
+                            <c:if test="${pagination.getPageIndex()<pagination.getCount()}">
+                                <li>
+                                    <a href="/pods?page=<%=pagination.getPageIndex() + 1%>" data="<%=pagination.getPageIndex() + 1%>" class="pagination-link py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><%=pagination.getPageIndex() + 1%></a>
+                                </li>
+                            </c:if>
+                            <c:if test="${pagination.getPageIndex()+1<pagination.getCount()}">
+                                <li>
+                                    <a href="/pods?page=<%=pagination.getPageIndex() + 2%>" data="<%=pagination.getPageIndex() + 2%>" class="pagination-link py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><%=pagination.getPageIndex() + 2%></a>
+                                </li>
+                            </c:if>
                             <li>
-                                <a href="#" class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                            </li>
-                            <li>
-                                <a href="#" aria-current="page" class="py-2 px-3 text-blue-600 bg-blue-50 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-                            </li>
-                            <li>
-                                <a href="#" class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-                            </li>
-                            <li>
-                                <a href="#" class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-                            </li>
-                            <li>
-                                <a href="#" class="py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                                <a href="/pods?page=<%=pagination.getNext()%>" data="<%=pagination.getNext()%>" class="pagination-link py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
             </div>
         </div>
+        <script>
+
+            const categorys = [
+            <%for (Category category : categorys) {%>
+            {
+            id: <%=category.getId()%>,
+                    name: "<%=category.getName()%>",
+                    group: {
+                    id: <%=category.getGroup().getId()%>,
+                            name: "<%=category.getGroup().getName()%>",
+                    }
+            },
+            <%}%>
+            ]
+
+            const category = document.getElementById("category");
+            for (var i = 0; i < categorys.length - 1; i++) {
+                category.innerHTML += '<option value="' + categorys[i].id + '">' + categorys[i].name + '</option>';
+            }
+
+            $("#group").on("change", function (e) {
+                category.innerHTML = "";
+                category.innerHTML += '<option value="all">Category</option>';
+                categorys.forEach(item => {
+                    if (item.group.id == $("#group").val() || $("#group").val() == "all") {
+                        category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>';
+                    }
+                });
+            })
+
+
+                    const url_string = window.location.href;
+            const url = new URL(url_string);
+            const search = url.searchParams.get("q");
+            const paginationLinks = document.querySelectorAll(".pagination-link");
+            if (paginationLinks) {
+            paginationLinks.forEach(item => {
+            var search = location.search.substring(1);
+            const params = search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"')
+                    .replace(/&/g, '","').replace(/=/g, '":"') + '"}') : {};
+            if (params?.group){
+            $("#group").val(params?.group)
+                    category.innerHTML = "";
+            categorys.forEach(item => {
+            if (item.group.id == params?.group || params?.group == "all") {
+            if (params?.category == item.id){
+            category.innerHTML += '<option value="' + item.id + '"selected>' + item.name + '</option>'
+            } else{
+            category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>'
+            }
+            }
+            });
+            }
+            const page = item.getAttribute("data");
+            params.page = page;
+            const href = new URLSearchParams(params).toString();
+            item.setAttribute("href", "?" + href);
+            })
+            }
+        </script>
         <jsp:include page="../base/footerImport.jsp" />
     </body>
 </html>

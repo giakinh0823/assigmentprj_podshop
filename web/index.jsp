@@ -4,14 +4,23 @@
     Author     : giaki
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="model.product.Group"%>
+<%@page import="dal.product.GroupDBContext"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Home Page</title>
+        <%
+            GroupDBContext groupDB = new GroupDBContext();
+            ArrayList<Group> groups = groupDB.list();
+            request.setAttribute("groups", groups);
+        %>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <jsp:include page="/views/base/header.jsp" />
+        <jsp:include page="/views/base/footerImport.jsp" />
     </body>
 </html>

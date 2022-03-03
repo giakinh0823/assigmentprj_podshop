@@ -7,6 +7,8 @@ package controller.admin.product;
 
 import controller.admin.auth.BaseAuthAdminController;
 import dal.auth.UserDBContext;
+import dal.product.CategoryDBContext;
+import dal.product.GroupDBContext;
 import dal.product.PodDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.auth.User;
 import model.common.Pagination;
+import model.product.Category;
+import model.product.Group;
 import model.product.Pod;
 import utils.Validate;
 
@@ -52,6 +56,20 @@ public class PodsController extends BaseAuthAdminController {
             int pageSize = 12;
             String page = validate.getField(request, "page", false);
             String search = validate.getField(request, "q", false);
+            String group = validate.getField(request, "group", false);
+            String category = validate.getField(request, "category", false);
+            int idGroup = -1;
+            int idCategory = -1;
+            if(group==null || group.isEmpty() || group.equalsIgnoreCase("all")){
+                idGroup = -1;
+            } else{
+                idGroup = validate.fieldInt(group, "Error category");
+            }
+            if(category==null || category.isEmpty() || category.equalsIgnoreCase("all")){
+                idCategory = -1;
+            } else{
+                idCategory = validate.fieldInt(category, "Error category");
+            }
             if (page == null || page.trim().length() == 0) {
                 page = "1";
             }
@@ -64,10 +82,19 @@ public class PodsController extends BaseAuthAdminController {
             } catch (Exception e) {
                 pageIndex = 1;
             }
-            if(search==null) search="";
+            if (search == null) {
+                search = "";
+            }
+            
             PodDBContext podDB = new PodDBContext();
-            Pagination pagination = new Pagination(pageIndex, pageSize, podDB.getSize());
-            ArrayList<Pod> pods = podDB.getPods(search, pageIndex, pageSize);
+            Pagination pagination = new Pagination(pageIndex, pageSize, podDB.getSizeFromSearch(search, idGroup, idCategory));
+            ArrayList<Pod> pods = podDB.getPods(search, idGroup, idCategory, pageIndex, pageSize);
+            GroupDBContext groupDB = new GroupDBContext();
+            ArrayList<Group> groups = groupDB.list();
+            CategoryDBContext categoryDB = new CategoryDBContext();
+            ArrayList<Category> categorys = categoryDB.list();
+            request.setAttribute("categorys", categorys);
+            request.setAttribute("groups", groups);
             request.setAttribute("pods", pods);
             request.setAttribute("pagination", pagination);
             request.getRequestDispatcher("/views/admin/pod/pods.jsp").forward(request, response);

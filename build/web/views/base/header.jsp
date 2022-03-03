@@ -74,12 +74,12 @@
                         <c:choose>
                             <c:when test="${group.getCategories().size()>0}">
                                 <li class="relative z-10" onmouseover="showMenuPod(this)" onmouseout="hiddenMenuPod(this)">
-                                    <a href="/pods/group/${group.getId()}" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200 uppercase">${group.getName()}</a>
+                                    <a href="/pods?group=${group.getId()}" class="font-medium block py-4 px-10 nav-link hover:bg-gray-200 uppercase">${group.getName()}</a>
                                     <div class="transition duration-150 ease-in-out absolute top-[100%] left-[0] bg-gray-100 menuPodItem" style="display: none">
                                         <ul class="pt-2 px-2">
                                             <c:forEach items="${group.getCategories()}" var="category">
                                                 <li class="font-medium border-b cursor-pointer" style="white-space: nowrap;">
-                                                    <a href="/pods/category/${category.getId()}" class="dropdown_menu-link block py-3 px-8 hover:bg-gray-200">${category.getName()}</a>
+                                                    <a href="/pods?category=${category.getId()}" class="dropdown_menu-link block py-3 px-8 hover:bg-gray-200">${category.getName()}</a>
                                                 </li>
                                             </c:forEach>
                                         </ul>
@@ -88,7 +88,7 @@
                             </c:when>
                             <c:otherwise>
                                 <li class="relative">
-                                    <a href="/pods/${group.getId()}" class="font-medium block py-4 px-6 nav-link hover:bg-gray-200 uppercase">${group.getName()}</a>
+                                    <a href="/pods?group=${group.getId()}" class="font-medium block py-4 px-6 nav-link hover:bg-gray-200 uppercase">${group.getName()}</a>
                                 </li>
                             </c:otherwise>
                         </c:choose>

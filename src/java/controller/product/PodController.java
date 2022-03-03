@@ -5,6 +5,7 @@
  */
 package controller.product;
 
+import dal.product.CategoryDBContext;
 import dal.product.GroupDBContext;
 import dal.product.PodDBContext;
 import java.io.IOException;
@@ -14,8 +15,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.common.Pagination;
+import model.product.Category;
 import model.product.Group;
 import model.product.Pod;
+import utils.Validate;
 
 /**
  *
@@ -23,24 +27,65 @@ import model.product.Pod;
  */
 public class PodController extends HttpServlet {
 
- 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PodDBContext podDB = new PodDBContext();
-        ArrayList<Pod> pods = podDB.list();
-        GroupDBContext groupDB = new GroupDBContext();
-        ArrayList<Group> groups = groupDB.list();
-        request.setAttribute("groups", groups);
-        request.setAttribute("pods", pods);
-        request.getRequestDispatcher("/views/product/pod.jsp").forward(request, response);
+        try {
+            Validate validate = new Validate();
+            int pageSize = 12;
+            String page = validate.getField(request, "page", false);
+            String search = validate.getField(request, "q", false);
+            String group = validate.getField(request, "group", false);
+            String category = validate.getField(request, "category", false);
+            int idGroup = -1;
+            int idCategory = -1;
+            if(group==null || group.isEmpty() || group.equalsIgnoreCase("all")){
+                idGroup = -1;
+            } else{
+                idGroup = validate.fieldInt(group, "Error category");
+            }
+            if(category==null || category.isEmpty() || category.equalsIgnoreCase("all")){
+                idCategory = -1;
+            } else{
+                idCategory = validate.fieldInt(category, "Error category");
+            }
+            
+            if (page == null || page.trim().length() == 0) {
+                page = "1";
+            }
+            int pageIndex = 0;
+            try {
+                pageIndex = validate.fieldInt(page, "Something error!");
+                if (pageIndex <= 0) {
+                    pageIndex = 1;
+                }
+            } catch (Exception e) {
+                pageIndex = 1;
+            }
+            if (search == null) {
+                search = "";
+            }
+            PodDBContext podDB = new PodDBContext();
+            Pagination pagination = new Pagination(pageIndex, pageSize, podDB.getSizeFromSearch(search, idGroup, idCategory));
+            ArrayList<Pod> pods = podDB.getPods(search, idGroup, idCategory, pageIndex, pageSize);
+            CategoryDBContext categoryDB = new CategoryDBContext();
+            ArrayList<Category> categorys = categoryDB.list();
+            request.setAttribute("categorys", categorys);
+            GroupDBContext groupDB = new GroupDBContext();
+            ArrayList<Group> groups = groupDB.list();
+            request.setAttribute("groups", groups);
+            request.setAttribute("pods", pods);
+            request.setAttribute("pagination", pagination);
+            request.getRequestDispatcher("/views/product/pod.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.getRequestDispatcher("/views/error/accessDenied.jsp").forward(request, response);
+        }
     }
 
-   
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**

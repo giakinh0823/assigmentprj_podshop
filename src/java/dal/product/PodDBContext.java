@@ -25,36 +25,80 @@ import utils.FileManage;
  */
 public class PodDBContext extends DBContext<Pod> {
     
-    public ArrayList<Pod> getPods(String value, int pageIndex, int pageSize) {
+  
+
+    public ArrayList<Pod> getPods(String search, int idGroup, int idCategory, int pageIndex, int pageSize) {
         ArrayList<Pod> pods = new ArrayList<>();
         CategoryDBContext categoryDB = new CategoryDBContext();
         ImageDBContext imageDB = new ImageDBContext();
         StateDBContext stateDB = new StateDBContext();
-        String sql = "SELECT * FROM (SELECT [id]\n"
-                + "      ,[name]\n"
-                + "      ,[brand]\n"
-                + "      ,[price]\n"
-                + "      ,[quantity]\n"
-                + "      ,[description]\n"
-                + "      ,[content]\n"
-                + "      ,[isSale]\n"
-                + "      ,[discount]\n"
-                + "      ,[created_at]\n"
-                + "      ,[updated_at]\n"
-                + "      ,[categoryId]\n"
-                + "      ,[state]\n"
+        String sql = "SELECT * FROM (SELECT [pod].[id]\n"
+                + "      ,[pod].[name]\n"
+                + "      ,[pod].[brand]\n"
+                + "      ,[pod].[price]\n"
+                + "      ,[pod].[quantity]\n"
+                + "      ,[pod].[description]\n"
+                + "      ,[pod].[content]\n"
+                + "      ,[pod].[isSale]\n"
+                + "      ,[pod].[discount]\n"
+                + "      ,[pod].[created_at]\n"
+                + "      ,[pod].[updated_at]\n"
+                + "      ,[pod].[categoryId]\n"
+                + "      ,[pod].[state]\n"
+                + "	 ,[category].[name] as 'categoryName'\n"
+                + "	 ,[group].[id] as 'groupId'\n"
+                + "	 ,[group].[name] as 'groupName'\n"
                 + "      ,ROW_NUMBER() OVER (ORDER BY [pod].[id] ASC) as row_index\n"
-                + "  FROM [pod] \n"
-                + " WHERE [pod].[name] LIKE ?) [pod] \n"
+                + "  FROM [pod] INNER JOIN [category] ON [category].[id] = [pod].[categoryId]\n"
+                + "  INNER JOIN [group] ON [group].[id] = [category].[groupId]\n"
+                + " WHERE [pod].[name] LIKE ? ";
+        if (idGroup != -1) {
+            sql += " AND [group].[id] = ?";
+            if (idCategory != -1) {
+                sql += " AND [category].[id] = ?";
+            }
+        } else {
+            if (idCategory != -1) {
+                sql += " AND [category].[id] = ?";
+            }
+        }
+
+        sql += ") [pod] \n"
                 + " WHERE row_index >= (? - 1) * ? + 1 AND row_index <= ? * ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
-            statement.setString(1, "%"+value+"%");
-            statement.setInt(2, pageIndex);
-            statement.setInt(3, pageSize);
-            statement.setInt(4, pageIndex);
-            statement.setInt(5, pageSize);
+            statement.setString(1, "%" + search + "%");
+            if (idGroup != -1) {
+                statement.setInt(2, idGroup);
+                if (idCategory != -1) {
+                    sql += " AND [category].[id] = ? ";
+                    statement.setInt(3, idCategory);
+                    statement.setInt(4, pageIndex);
+                    statement.setInt(5, pageSize);
+                    statement.setInt(6, pageIndex);
+                    statement.setInt(7, pageSize);
+                } else {
+                    statement.setInt(3, pageIndex);
+                    statement.setInt(4, pageSize);
+                    statement.setInt(5, pageIndex);
+                    statement.setInt(6, pageSize);
+                }
+            } else {
+                if (idCategory != -1) {
+                    sql += " [category].[id] = ? ";
+                    statement.setInt(2, idCategory);
+                    statement.setInt(3, pageIndex);
+                    statement.setInt(4, pageSize);
+                    statement.setInt(5, pageIndex);
+                    statement.setInt(6, pageSize);
+                } else{
+                    statement.setInt(2, pageIndex);
+                    statement.setInt(3, pageSize);
+                    statement.setInt(4, pageIndex);
+                    statement.setInt(5, pageSize);
+                }
+            }
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Pod pod = new Pod();
@@ -83,6 +127,53 @@ public class PodDBContext extends DBContext<Pod> {
             Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return pods;
+    }
+    
+    
+     public int getSizeFromSearch(String search, int idGroup, int idCategory) {
+        ArrayList<Pod> pods = new ArrayList<>();
+        CategoryDBContext categoryDB = new CategoryDBContext();
+        ImageDBContext imageDB = new ImageDBContext();
+        StateDBContext stateDB = new StateDBContext();
+         String sql = "SELECT COUNT([pod].[id]) as 'size' \n"
+                + "  FROM [pod] INNER JOIN [category] ON [category].[id] = [pod].[categoryId]\n"
+                + "  INNER JOIN [group] ON [group].[id] = [category].[groupId]\n"
+                + " WHERE [pod].[name] LIKE ? ";
+        if (idGroup != -1) {
+            sql += " AND [group].[id] = ?";
+            if (idCategory != -1) {
+                sql += " AND [category].[id] = ?";
+            }
+        } else {
+            if (idCategory != -1) {
+                sql += " AND [category].[id] = ?";
+            }
+        }
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, "%" + search + "%");
+            if (idGroup != -1) {
+                statement.setInt(2, idGroup);
+                if (idCategory != -1) {
+                    sql += " AND [category].[id] = ? ";
+                    statement.setInt(3, idCategory);
+                } 
+            } else {
+                if (idCategory != -1) {
+                    sql += " [category].[id] = ? ";
+                    statement.setInt(2, idCategory);
+                }
+            }
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int size = result.getInt("size");
+                return size;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
     @Override
@@ -182,7 +273,7 @@ public class PodDBContext extends DBContext<Pod> {
                 pod.setCategory(category);
                 State state = stateDB.get(pod.getStateId());
                 pod.setState(state);
-                
+
                 ArrayList<Image> images = imageDB.findByPod(pod.getId());
                 pod.setImages(images);
                 return pod;
@@ -244,7 +335,7 @@ public class PodDBContext extends DBContext<Pod> {
         }
         return null;
     }
-    
+
     @Override
     public Pod insert(Pod model) {
         String sql = "INSERT INTO [pod]\n"
@@ -301,7 +392,7 @@ public class PodDBContext extends DBContext<Pod> {
 
     @Override
     public void update(Pod model) {
-         String sql = "UPDATE [pod]\n"
+        String sql = "UPDATE [pod]\n"
                 + "      SET  [name] = ?\n"
                 + "           ,[brand] = ?\n"
                 + "           ,[price] = ?\n"
@@ -314,7 +405,7 @@ public class PodDBContext extends DBContext<Pod> {
                 + "           ,[updated_at] = ?\n"
                 + "           ,[categoryId] = ?\n"
                 + "           ,[state] = ?\n"
-                 + " WHERE id = ?";
+                + " WHERE id = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
@@ -351,7 +442,7 @@ public class PodDBContext extends DBContext<Pod> {
             }
         }
     }
-    
+
     public void deleteByCategory(int id) {
         try {
             String sql = "DELETE FROM [pod]\n"
@@ -363,7 +454,7 @@ public class PodDBContext extends DBContext<Pod> {
             Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public void delete(int id) {
         ImageDBContext imageDB = new ImageDBContext();
