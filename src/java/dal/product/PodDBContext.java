@@ -29,7 +29,6 @@ public class PodDBContext extends DBContext<Pod> {
 
     public ArrayList<Pod> getPods(String search, int idGroup, int idCategory, int pageIndex, int pageSize) {
         ArrayList<Pod> pods = new ArrayList<>();
-        CategoryDBContext categoryDB = new CategoryDBContext();
         ImageDBContext imageDB = new ImageDBContext();
         StateDBContext stateDB = new StateDBContext();
         String sql = "SELECT * FROM (SELECT [pod].[id]\n"
@@ -115,7 +114,13 @@ public class PodDBContext extends DBContext<Pod> {
                 pod.setUpdated_at(result.getTimestamp("updated_at"));
                 pod.setCategoryId(result.getInt("categoryId"));
                 pod.setStateId(result.getInt("state"));
-                Category category = categoryDB.get(pod.getCategoryId());
+                Group group = new Group();
+                group.setId(result.getInt("groupId"));
+                group.setName(result.getString("groupName"));
+                Category category = new Category();
+                category.setId(pod.getId());
+                category.setName(result.getString("categoryName"));
+                category.setGroup(group);
                 pod.setCategory(category);
                 State state = stateDB.get(pod.getStateId());
                 pod.setState(state);
@@ -131,11 +136,7 @@ public class PodDBContext extends DBContext<Pod> {
     
     
      public int getSizeFromSearch(String search, int idGroup, int idCategory) {
-        ArrayList<Pod> pods = new ArrayList<>();
-        CategoryDBContext categoryDB = new CategoryDBContext();
-        ImageDBContext imageDB = new ImageDBContext();
-        StateDBContext stateDB = new StateDBContext();
-         String sql = "SELECT COUNT([pod].[id]) as 'size' \n"
+        String sql = "SELECT COUNT([pod].[id]) as 'size' \n"
                 + "  FROM [pod] INNER JOIN [category] ON [category].[id] = [pod].[categoryId]\n"
                 + "  INNER JOIN [group] ON [group].[id] = [category].[groupId]\n"
                 + " WHERE [pod].[name] LIKE ? ";

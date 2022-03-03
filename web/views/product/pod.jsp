@@ -40,7 +40,7 @@
                             SALE
                         </a>
                         <c:forEach items="${groups}" var="group">
-                            <a href="/pods/group/${group.getId()}" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                            <a href="/pods?group=${group.getId()}" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                                 ${group.getName()}
                             </a>
                         </c:forEach>
@@ -95,7 +95,12 @@
                                     <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white" style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">${pod.getName()}</h3>
                                 </a>
                                 <div class="flex justify-between items-center mt-auto">
-                                    <span class="text-xl font-medium text-red-500">$599</span>
+                                    <span class="text-xl font-medium text-red-500" id="price-${pod.id}">${pod.price}</span>
+                                     <script>
+                                        var price = Number.parseInt($("#price-${pod.id}").text());
+                                        price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                        $("#price-${pod.id}").text(price);
+                                    </script>
                                     <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
                                 </div>
                             </div>
@@ -170,7 +175,7 @@
             })
 
 
-                    const url_string = window.location.href;
+            const url_string = window.location.href;
             const url = new URL(url_string);
             const search = url.searchParams.get("q");
             const paginationLinks = document.querySelectorAll(".pagination-link");
@@ -182,21 +187,21 @@
             if (params?.group){
             $("#group").val(params?.group)
                     category.innerHTML = "";
-            categorys.forEach(item => {
-            if (item.group.id == params?.group || params?.group == "all") {
-            if (params?.category == item.id){
-            category.innerHTML += '<option value="' + item.id + '"selected>' + item.name + '</option>'
-            } else{
-            category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>'
-            }
-            }
-            });
+                categorys.forEach(item => {
+                if (item.group.id == params?.group || params?.group == "all") {
+                    if (params?.category == item.id){
+                        category.innerHTML += '<option value="' + item.id + '"selected>' + item.name + '</option>'
+                        } else{
+                            category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>'
+                        }
+                    }
+                });
             }
             const page = item.getAttribute("data");
-            params.page = page;
-            const href = new URLSearchParams(params).toString();
-            item.setAttribute("href", "?" + href);
-            })
+                params.page = page;
+                const href = new URLSearchParams(params).toString();
+                    item.setAttribute("href", "?" + href);
+                })
             }
         </script>
         <jsp:include page="../base/footerImport.jsp" />
