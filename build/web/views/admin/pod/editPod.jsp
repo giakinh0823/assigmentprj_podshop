@@ -58,7 +58,10 @@
                     <div class="flex w-full">
                         <div>
                             <div class="flex justify-center items-center">
-                                <form action="/admin/pods/add" style="min-width: 500px" id="form-pod-add">
+                                <form action="/admin/pods/edit" style="min-width: 500px" id="form-pod-edit">
+                                    <div class="mb-6">
+                                        <input type="hidden" id="id" name="id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                    </div>
                                     <div id="showErrorForm" class="hidden">
                                         <div id="contentErrorForm" class="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 mb-3" role="alert">
                                         </div>
@@ -120,11 +123,34 @@
                                         <label for="content" class="block mb-2 text-sm font-medium text-gray-900">Description</label>
                                         <textarea id="content" name="content" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Description..."></textarea>
                                     </div>
+                                    <div class="mb-6 grid grid-cols-3 space-3">
+                                        <c:forEach items="${pod.images}" var="image">
+                                            <div class="mb-4" id="image-item-${image.id}">
+                                                <div class="max-w-[150px] bg-white rounded-lg border border-gray-200 shadow-md">
+                                                    <div class="flex justify-end px-4 pt-4">
+                                                        <button id="dropdown-button-${image.id}" data-dropdown-toggle="dropdown-image-${image.id}" class="hidden sm:inline-block text-gray-500" type="button">
+                                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                                                        </button>
+                                                        <div id="dropdown-image-${image.id}" class="hidden z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow ">
+                                                            <ul class="py-1" aria-labelledby="dropdown-image-${image.id}">
+                                                                <li>
+                                                                    <button type="button" onclick="addDeleteImage(${image.id})" class="block py-2 px-4 text-sm text-red-600 hover:bg-gray-100">Delete</button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex flex-col items-center">
+                                                        <img class="mb-3 w-full h-full" src="/assets/images/pods/${image.image}" alt="Bonnie image"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
                                     <div class="mb-6">
                                         <label class="block mb-2 text-sm font-medium text-gray-900" for="images">Upload image</label>
                                         <input id="images"  accept="image/png, image/jpeg" type="file" name="images" multiple multiple class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none focus:border-transparent" >
                                     </div>
-                                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Add</button>
+                                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Update</button>
                                 </form>
                             </div>
                         </div>
@@ -135,8 +161,15 @@
                 </div>
             </div>
         </div>
-         <jsp:include page="../base/footer.jsp" />
+        <jsp:include page="../base/footer.jsp" />
         <script>
+            const imagesDelete = [];
+            
+            const addDeleteImage = (id) => {
+                imagesDelete.push(id);
+                console.log(imagesDelete)
+                $("#image-item-"+id).remove();
+            }
             const categorys = [
                 <%for (Category category : listCategory) {%>
                         {
@@ -155,7 +188,7 @@
                 category.innerHTML += '<option value="'+categorys[i].id+'">'+categorys[i].name+'</option>'
             }
             
-            
+            $("#id").val(${pod.id})
             $("#category").val(${pod.category.id}),
             $("#name").val("${pod.name}"),
             $("#brand").val("${pod.brand}"),
@@ -176,9 +209,22 @@
                     }
                 })
             })
-           $("#form-pod-add").on("submit", function(e){
+            
+           $("#form-pod-edit").on("submit", function(e){
                e.preventDefault();
+               if(imagesDelete.length>0){
+                    imagesDelete.forEach((item) => {
+                        $.ajax({
+                            method: "POST",
+                            url: "/admin/pods/image/delete",
+                            data: {id: item},
+                        }).done(function (data) {
+                           
+                        })
+                   })
+               }
                const new_data = {
+                   id: $("#id").val(),
                    category: $("#category").val(),
                    name: $("#name").val(),
                    brand: $("#brand").val(),
@@ -191,12 +237,12 @@
                    content: data,
                    images: $("#images").val(),
                }
-               console.log(new_data);
+               console.log(new FormData(document.getElementById("form-pod-edit")));
                $.ajax({
                     method: "POST",
-                    url: "/admin/pods/add",
+                    url: "/admin/pods/edit",
                     miniType: "multipart/form-data",
-                    data: new FormData(document.getElementById("form-pod-add")),
+                    data: new FormData(document.getElementById("form-pod-edit")),
                     cache: false,
                     contentType: false,
                     processData: false,
@@ -206,11 +252,14 @@
                         $('#contentErrorForm').text(data?.detailMessage);
                         $("#showErrorForm").removeClass("hidden")
                     } else{
-                        location.pathname = "/admin/pods";
+                        $("#showErrorForm").addClass("hidden")
+                        $('#contentSuccessForm').text("Update success")
+                        $("#category-show-name").text("Edit success")
+                        $("#showSuccessForm").removeClass("hidden")
+                        location.reload();
                     }
                 })
            })
-            
         </script>
     </body>
 </html>

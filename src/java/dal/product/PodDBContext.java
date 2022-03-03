@@ -24,6 +24,66 @@ import utils.FileManage;
  * @author giaki
  */
 public class PodDBContext extends DBContext<Pod> {
+    
+    public ArrayList<Pod> getPods(String value, int pageIndex, int pageSize) {
+        ArrayList<Pod> pods = new ArrayList<>();
+        CategoryDBContext categoryDB = new CategoryDBContext();
+        ImageDBContext imageDB = new ImageDBContext();
+        StateDBContext stateDB = new StateDBContext();
+        String sql = "SELECT * FROM (SELECT [id]\n"
+                + "      ,[name]\n"
+                + "      ,[brand]\n"
+                + "      ,[price]\n"
+                + "      ,[quantity]\n"
+                + "      ,[description]\n"
+                + "      ,[content]\n"
+                + "      ,[isSale]\n"
+                + "      ,[discount]\n"
+                + "      ,[created_at]\n"
+                + "      ,[updated_at]\n"
+                + "      ,[categoryId]\n"
+                + "      ,[state]\n"
+                + "      ,ROW_NUMBER() OVER (ORDER BY [pod].[id] ASC) as row_index\n"
+                + "  FROM [pod] \n"
+                + " WHERE [pod].[name] LIKE ?) [pod] \n"
+                + " WHERE row_index >= (? - 1) * ? + 1 AND row_index <= ? * ?";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, "%"+value+"%");
+            statement.setInt(2, pageIndex);
+            statement.setInt(3, pageSize);
+            statement.setInt(4, pageIndex);
+            statement.setInt(5, pageSize);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                Pod pod = new Pod();
+                pod.setId(result.getInt("id"));
+                pod.setName(result.getString("name"));
+                pod.setBrand(result.getString("brand"));
+                pod.setPrice(result.getDouble("price"));
+                pod.setQuantity(result.getInt("quantity"));
+                pod.setDescription(result.getString("description"));
+                pod.setContent(result.getString("content"));
+                pod.setIsSale(result.getBoolean("isSale"));
+                pod.setDiscount(result.getInt("discount"));
+                pod.setCreated_at(result.getTimestamp("created_at"));
+                pod.setUpdated_at(result.getTimestamp("updated_at"));
+                pod.setCategoryId(result.getInt("categoryId"));
+                pod.setStateId(result.getInt("state"));
+                Category category = categoryDB.get(pod.getCategoryId());
+                pod.setCategory(category);
+                State state = stateDB.get(pod.getStateId());
+                pod.setState(state);
+                ArrayList<Image> images = imageDB.findByPod(pod.getId());
+                pod.setImages(images);
+                pods.add(pod);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return pods;
+    }
 
     @Override
     public ArrayList<Pod> list() {
@@ -68,10 +128,9 @@ public class PodDBContext extends DBContext<Pod> {
                 pod.setCategory(category);
                 State state = stateDB.get(pod.getStateId());
                 pod.setState(state);
-                pods.add(pod);
-                
                 ArrayList<Image> images = imageDB.findByPod(pod.getId());
                 pod.setImages(images);
+                pods.add(pod);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -134,6 +193,58 @@ public class PodDBContext extends DBContext<Pod> {
         return null;
     }
 
+    public Pod getLast() {
+        ArrayList<Pod> pods = new ArrayList<>();
+        CategoryDBContext categoryDB = new CategoryDBContext();
+        ImageDBContext imageDB = new ImageDBContext();
+        StateDBContext stateDB = new StateDBContext();
+        String sql = "SELECT TOP 1 [id]\n"
+                + "      ,[name]\n"
+                + "      ,[brand]\n"
+                + "      ,[price]\n"
+                + "      ,[quantity]\n"
+                + "      ,[description]\n"
+                + "      ,[content]\n"
+                + "      ,[isSale]\n"
+                + "      ,[discount]\n"
+                + "      ,[created_at]\n"
+                + "      ,[updated_at]\n"
+                + "      ,[categoryId]\n"
+                + "      ,[state]\n"
+                + "  FROM [pod] ORDER BY id DESC";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                Pod pod = new Pod();
+                pod.setId(result.getInt("id"));
+                pod.setName(result.getString("name"));
+                pod.setBrand(result.getString("brand"));
+                pod.setPrice(result.getDouble("price"));
+                pod.setQuantity(result.getInt("quantity"));
+                pod.setDescription(result.getString("description"));
+                pod.setContent(result.getString("content"));
+                pod.setIsSale(result.getBoolean("isSale"));
+                pod.setDiscount(result.getInt("discount"));
+                pod.setCreated_at(result.getTimestamp("created_at"));
+                pod.setUpdated_at(result.getTimestamp("updated_at"));
+                pod.setCategoryId(result.getInt("categoryId"));
+                pod.setStateId(result.getInt("state"));
+                Category category = categoryDB.get(pod.getCategoryId());
+                pod.setCategory(category);
+                State state = stateDB.get(pod.getStateId());
+                pod.setState(state);
+                ArrayList<Image> images = imageDB.findByPod(pod.getId());
+                pod.setImages(images);
+                return pod;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     @Override
     public Pod insert(Pod model) {
         String sql = "INSERT INTO [pod]\n"
@@ -166,8 +277,7 @@ public class PodDBContext extends DBContext<Pod> {
             statement.setInt(11, model.getCategoryId());
             statement.setInt(12, model.getStateId());
             statement.executeUpdate();
-            ArrayList<Pod> pods = list();
-            return pods.get(pods.size() - 1);
+            return getLast();
         } catch (SQLException ex) {
             Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -191,7 +301,55 @@ public class PodDBContext extends DBContext<Pod> {
 
     @Override
     public void update(Pod model) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         String sql = "UPDATE [pod]\n"
+                + "      SET  [name] = ?\n"
+                + "           ,[brand] = ?\n"
+                + "           ,[price] = ?\n"
+                + "           ,[quantity] = ?\n"
+                + "           ,[description] = ?\n"
+                + "           ,[content] = ?\n"
+                + "           ,[isSale] = ?\n"
+                + "           ,[discount] = ?\n"
+                + "           ,[created_at] = ?\n"
+                + "           ,[updated_at] = ?\n"
+                + "           ,[categoryId] = ?\n"
+                + "           ,[state] = ?\n"
+                 + " WHERE id = ?";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, model.getName());
+            statement.setString(2, model.getBrand());
+            statement.setDouble(3, model.getPrice());
+            statement.setInt(4, model.getQuantity());
+            statement.setString(5, model.getDescription());
+            statement.setString(6, model.getContent());
+            statement.setBoolean(7, model.isIsSale());
+            statement.setInt(8, model.getDiscount());
+            statement.setTimestamp(9, model.getCreated_at());
+            statement.setTimestamp(10, model.getUpdated_at());
+            statement.setInt(11, model.getCategoryId());
+            statement.setInt(12, model.getStateId());
+            statement.setInt(13, model.getId());
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
     
     public void deleteByCategory(int id) {
@@ -219,6 +377,22 @@ public class PodDBContext extends DBContext<Pod> {
         } catch (SQLException ex) {
             Logger.getLogger(PodDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public int getSize() {
+        String sql = "SELECT COUNT([pod].[id]) as 'size'  FROM [pod]";
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                int size = result.getInt("size");
+                return size;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
 }

@@ -125,6 +125,10 @@
         <servlet-name>EditPodController</servlet-name>
         <servlet-class>controller.admin.product.EditPodController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeletePodImageController</servlet-name>
+        <servlet-class>controller.admin.product.DeletePodImageController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -240,6 +244,10 @@
     <servlet-mapping>
         <servlet-name>EditPodController</servlet-name>
         <url-pattern>/admin/pods/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeletePodImageController</servlet-name>
+        <url-pattern>/admin/pods/image/delete</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

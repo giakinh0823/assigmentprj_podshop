@@ -167,14 +167,14 @@
 
                             <div class="mt-6">
                                 <p class="text-md text-gray-500 font-medium mb-3">SỐ LƯỢNG</p>
-                                <div class="flex items-center border-solid border-2 border-gray-900" style="width: fit-content">
-                                    <button id="button-minus" type="button" class="text-white bg-gray-900 hover:bg-gray-900 focus:ring-1 focus:ring-gray-600 font-medium px-2 py-2 text-center text-sm">
+                                <div class="flex items-center border-solid border border-gray-100" style="width: fit-content">
+                                    <button id="button-minus" type="button" class="text-white focus:ring-1 font-medium px-2 py-2 text-center text-sm text-gray-500 border border-gray-100">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                                     </button>
                                     <span class="py-1 px-4 text-2xl font-bold" id="quantity">
                                         0
                                     </span>
-                                    <button id="button-plus" type="button" class="text-white bg-gray-900 hover:bg-gray-900 focus:ring-1 focus:bg-gray-900 font-medium px-2 py-2 text-center text-sm">
+                                    <button id="button-plus" type="button" class="text-white focus:ring-1 font-medium px-2 py-2 text-center text-sm text-gray-500 border border-gray-100">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                                     </button>                            
                                 </div>

@@ -10,12 +10,16 @@ import dal.auth.UserDBContext;
 import dal.product.PodDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.auth.User;
+import model.common.Pagination;
+import model.product.Pod;
+import utils.Validate;
 
 /**
  *
@@ -43,9 +47,33 @@ public class PodsController extends BaseAuthAdminController {
 
     @Override
     protected void processGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PodDBContext podDB = new PodDBContext();
-        request.setAttribute("pods", podDB.list());
-        request.getRequestDispatcher("/views/admin/pod/pods.jsp").forward(request, response);
+        try {
+            Validate validate = new Validate();
+            int pageSize = 12;
+            String page = validate.getField(request, "page", false);
+            String search = validate.getField(request, "q", false);
+            if (page == null || page.trim().length() == 0) {
+                page = "1";
+            }
+            int pageIndex = 0;
+            try {
+                pageIndex = validate.fieldInt(page, "Something error!");
+                if (pageIndex <= 0) {
+                    pageIndex = 1;
+                }
+            } catch (Exception e) {
+                pageIndex = 1;
+            }
+            if(search==null) search="";
+            PodDBContext podDB = new PodDBContext();
+            Pagination pagination = new Pagination(pageIndex, pageSize, podDB.getSize());
+            ArrayList<Pod> pods = podDB.getPods(search, pageIndex, pageSize);
+            request.setAttribute("pods", pods);
+            request.setAttribute("pagination", pagination);
+            request.getRequestDispatcher("/views/admin/pod/pods.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.getRequestDispatcher("/views/error/accessDenied.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -62,7 +90,5 @@ public class PodsController extends BaseAuthAdminController {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    
 
 }

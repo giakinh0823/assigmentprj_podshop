@@ -29,8 +29,10 @@ public class LoginAdminController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
+                
         boolean loggedInUser = session != null && session.getAttribute("user") != null;
         boolean loggedInAdmin = session != null && session.getAttribute("admin") != null;
+        
         if (loggedInUser) {
             request.getRequestDispatcher("/views/error/accessDenied.jsp").forward(request, response);
         } else {
