@@ -67,11 +67,11 @@
                     <c:forEach items="${pods}" var="pod">
                         <div class="bg-white rounded-lg shadow-md flex flex-col">
                             <a href="/pods/detail?id=${pod.getId()}">
-                                <img class="rounded-t-lg w-full h-[280px]" src="/assets/images/pods/${pod.getImages().get(1).getImage()}" alt="product image" />
+                                <img class="rounded-t-lg w-full h-[280px]" src="/assets/images/pods/${pod.getImages().get(pod.getImages().size()-1).getImage()}" alt="product image" />
                             </a>
                             <div class="px-5 pb-5 mt-4 flex flex-col flex-1">
-                                <a href="/pods/detail?id=${pod.getId()}">
-                                    <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">${pod.getName()}</h3>
+                                <a class="mb-10" href="/pods/detail?id=${pod.getId()}">
+                                    <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white" style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">${pod.getName()}</h3>
                                 </a>
                                 <div class="flex justify-between items-center mt-auto">
                                     <span class="text-xl font-medium text-red-500">$599</span>

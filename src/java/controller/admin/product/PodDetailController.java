@@ -50,7 +50,7 @@ public class PodDetailController extends BaseAuthAdminController {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         Validate validate = new Validate();
+        Validate validate = new Validate();
         try {
             String idString = validate.getField(request, "id", true);
             int id = validate.fieldInt(idString, "Error get field id");

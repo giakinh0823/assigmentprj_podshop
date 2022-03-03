@@ -194,20 +194,6 @@
                         location.pathname = "/admin/pods";
                     }
                 })
-                
-//               $.ajax({
-//                    method: "POST",
-//                    url: "/admin/pods/add",
-//                    data: new_data,
-//                }).done(function (data) {
-//                    if (data?.detailMessage) {
-//                        $("#showSuccessForm").addClass("hidden")
-//                        $('#contentErrorForm').text(data?.detailMessage);
-//                        $("#showErrorForm").removeClass("hidden")
-//                    } else{
-//                        location.pathname = "/admin/pods";
-//                    }
-//                })
            })
             
         </script>

@@ -69,6 +69,7 @@
         <script src="/assets/js/ckeditor/build/ckeditor.js"></script>
         <script>
             let data;
+            let new_editor;
             const watchdog = new CKSource.EditorWatchdog();
             window.watchdog = watchdog;
 
@@ -88,8 +89,8 @@
                                 let content = editor.getData();
                                 data = content;
                                 $("#content").val(content);
-                                console.log(content);
                             })
+                            new_editor=editor;
                             return editor;
                         })
             });

@@ -121,6 +121,10 @@
         <servlet-name>PodPublicDetailController</servlet-name>
         <servlet-class>controller.product.PodDetailController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditPodController</servlet-name>
+        <servlet-class>controller.admin.product.EditPodController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -232,6 +236,10 @@
     <servlet-mapping>
         <servlet-name>PodPublicDetailController</servlet-name>
         <url-pattern>/pods/detail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditPodController</servlet-name>
+        <url-pattern>/admin/pods/edit</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
