@@ -3,6 +3,7 @@
     Created on : Feb 24, 2022, 5:10:06 PM
     Author     : giaki
 --%>
+<%@page import="model.auth.User"%>
 <%@page import="model.product.Group"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -14,6 +15,8 @@
         <jsp:include page="headerImport.jsp" />
         <%
             ArrayList<Group> groups = (ArrayList<Group>) request.getAttribute("groups");
+            User user = (User) session.getAttribute("user");
+            Integer quantity = (Integer) session.getAttribute("quantity");
         %>
     </head>
     <body>
@@ -24,43 +27,58 @@
                     <span class="self-center text-lg font-semibold whitespace-nowrap">Pod Dung Peo</span>
                 </a>
                 <div class="flex items-center md:order-2">
-                    <div class="mr-2">
-                        <button type="button" class="flex mr-3 text-sm text-gray-700" id="user-menu-button" aria-expanded="false" type="button">
+                    <div class="mr-4 relative" id="carts">
+                        <a href="/carts" class="flex mr-3 text-sm text-gray-700" id="user-menu-button" aria-expanded="false" type="button">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </button>
+                        </a>
+                        <span id="cart-quantity" class="<c:if test="${quantity==null || quantity==0}">hidden</c:if> bg-red-500 text-white text-sm font-semibold inline-flex items-center flex justify-center text-center rounded-full w-7 h-7 absolute -top-3 -right-2">
+                            ${quantity}
+                        </span>
                     </div>
-                    <div>
-                        <button type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" type="button" data-dropdown-toggle="dropdown">
-                            <span class="sr-only">Open user menu</span>
-                            <img class="w-8 h-8 rounded-full" src="https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-1/273459935_1660427770969456_3514898849168559605_n.jpg?stp=dst-jpg_p200x200&_nc_cat=103&ccb=1-5&_nc_sid=7206a8&_nc_ohc=uM9Lj9NRpY4AX-GwTOZ&_nc_ht=scontent.fhan4-3.fna&oh=00_AT80ycX_bZFVdmE2HyzoB87CF4AOrPhHt5E9HogsNmZQaQ&oe=621C4DDB" alt="user photo">
-                        </button>
-                        <!-- Dropdown menu -->
-                        <div class="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow" id="dropdown">
-                            <div class="py-3 px-4">
-                                <span class="block text-sm text-gray-900">Bonnie Green</span>
-                                <span class="block text-sm font-medium text-gray-500 truncate">name@flowbite.com</span>
-                            </div>
-                            <ul class="py-1" aria-labelledby="dropdown">
-                                <li>
-                                    <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Earnings</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
-                                </li>
-                            </ul>
+                    <c:if test="${user==null}">
+                        <div class="flex items-center">
+                            <a href="/login" class="block font-medium text-lg text-gray-700">Login</a>
+                            <span class="font-medium text-lg mx-3">/</span>
+                            <a href="/signup" class="block font-medium text-lg text-gray-700">Signup</a>
                         </div>
-                        <button data-collapse-toggle="mobile-menu-2" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="mobile-menu-2" aria-expanded="false">
-                            <span class="sr-only">Open main menu</span>
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
-                            <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </button>
-                    </div>
+                    </c:if>
+                    <c:if test="${user!=null}">
+                        <div>
+                            <button type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" type="button" data-dropdown-toggle="dropdown">
+                                <span class="sr-only">Open user menu</span>
+                                <c:if test="${user.getAvatar()!=null}">
+                                    <img class="w-8 h-8 rounded-full" src="/assets/images/user/${user.avatar}" alt="user photo">
+                                </c:if>
+                                <c:if test="${user.getAvatar()==null}">
+                                    <img class="w-8 h-8 rounded-full" src="/assets/images/default.png"/>
+                                </c:if>
+
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div class="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow" id="dropdown">
+                                <div class="py-3 px-4">
+                                    <span class="block text-sm text-gray-900">${user.username}</span>
+                                </div>
+                                <ul class="py-1" aria-labelledby="dropdown">
+                                    <li>
+                                        <a href="/profile" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="/orders" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Order</a>
+                                    </li>
+                                    <li>
+                                        <a href="/logout" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button data-collapse-toggle="mobile-menu-2" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="mobile-menu-2" aria-expanded="false">
+                                <span class="sr-only">Open main menu</span>
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                                <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            </button>
+                        </div>
+                    </c:if>
+
                 </div>
             </div>
         </nav>

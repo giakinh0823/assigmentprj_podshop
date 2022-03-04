@@ -84,7 +84,12 @@
                         </select>
                     </div>
                 </div>
-                <div class="grid grid-cols-4 gap-5">
+                <c:if test="${pods.size()<=0}">
+                    <div class="w-full min-h-[50vh] flex justify-center items-center">
+                        <p class="text-5xl">NOT FOUND</p>
+                    </div>
+                </c:if>
+                <div class="grid grid-cols-4 gap-5 <%=pods.size()<=0 ?"hidden": ""%>">
                     <c:forEach items="${pods}" var="pod">
                         <div class="bg-white rounded-lg shadow-md flex flex-col">
                             <a href="/pods/detail?id=${pod.getId()}">
@@ -101,13 +106,13 @@
                                         price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
                                         $("#price-${pod.id}").text(price);
                                     </script>
-                                    <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</a>
+                                    <button type="button" onclick="addToCart(${pod.id})" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</button>
                                 </div>
                             </div>
                         </div>
                     </c:forEach> 
                 </div>
-                <div class="mt-10 mb-5 w-full flex justify-center">
+                <div class="mt-10 mb-5 w-full flex justify-center <%=pods.size()<=0 ?"hidden": ""%>">
                     <nav aria-label="Page navigation example">
                         <ul class="inline-flex -space-x-px">
                             <li>
@@ -145,6 +150,25 @@
             </div>
         </div>
         <script>
+            
+            const addToCart = (podId) => {
+                console.log(podId);
+                const data = {
+                    podId: podId,
+                    quantity: 1,
+                }
+                $.ajax({
+                    method: "POST",
+                    url: "/addCart",
+                    data: data,
+                }).done(function(data){
+                    if (data?.detailMessage) {
+                        
+                    }else{
+                       $("#cart-quantity").text(data);
+                    }
+                })
+            }
 
             const categorys = [
             <%for (Category category : categorys) {%>
@@ -203,6 +227,8 @@
                     item.setAttribute("href", "?" + href);
                 })
             }
+            
+            
         </script>
         <jsp:include page="../base/footerImport.jsp" />
     </body>
