@@ -24,6 +24,8 @@ public class LogoutController extends HttpServlet {
         HttpSession session = request.getSession();
         session.removeAttribute("user");
         session.removeAttribute("admin");
+        session.removeAttribute("carts");
+        session.removeAttribute("quantity");
         response.sendRedirect("/login");
     }
 

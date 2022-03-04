@@ -40,10 +40,11 @@ public class UpdateQuantityCart extends HttpServlet {
             ArrayList<Cart> carts = new ArrayList<Cart>();
             User user = (User) session.getAttribute("user");
             if (user != null) {
-                carts = cartDB.findByUser(user.getId());
                 Cart old_cart = cartDB.findByPodUser(id, user.getId());
                 old_cart.setQuantity(quantity);
                 cartDB.update(old_cart);
+                CartDBContext new_cartDB = new CartDBContext();
+                carts = new_cartDB.findByUser(user.getId());
             } else {
                 carts = (ArrayList<Cart>) session.getAttribute("carts");
                 if (carts == null) {

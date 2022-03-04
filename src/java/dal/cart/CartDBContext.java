@@ -8,6 +8,7 @@ package dal.cart;
 import dal.DBContext;
 import dal.product.CategoryDBContext;
 import dal.product.GroupDBContext;
+import dal.product.PodDBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 import model.cart.Cart;
 import model.product.Category;
 import model.product.Group;
+import model.product.Pod;
 
 /**
  *
@@ -27,6 +29,7 @@ public class CartDBContext extends DBContext<Cart> {
     public ArrayList<Cart> findByUser(int userId) {
         ArrayList<Cart> carts = new ArrayList<>();
         CategoryDBContext categoryDB = new CategoryDBContext();
+        PodDBContext podDB = new PodDBContext();
         String sql = "SELECT [id]\n"
                 + "      ,[userId]\n"
                 + "      ,[podId]\n"
@@ -47,6 +50,8 @@ public class CartDBContext extends DBContext<Cart> {
                 cart.setQuantity(result.getInt("quantity"));
                 cart.setUpdated_at(result.getTimestamp("updated_at"));
                 cart.setCreated_at(result.getTimestamp("created_at"));
+                Pod pod = podDB.get(cart.getPodId());
+                cart.setPod(pod);
                 carts.add(cart);
             }
         } catch (SQLException ex) {
@@ -58,6 +63,7 @@ public class CartDBContext extends DBContext<Cart> {
     @Override
     public ArrayList<Cart> list() {
         ArrayList<Cart> carts = new ArrayList<>();
+        PodDBContext podDB = new PodDBContext();
         CategoryDBContext categoryDB = new CategoryDBContext();
         String sql = "SELECT [id]\n"
                 + "      ,[userId]\n"
@@ -77,6 +83,8 @@ public class CartDBContext extends DBContext<Cart> {
                 cart.setQuantity(result.getInt("quantity"));
                 cart.setUpdated_at(result.getTimestamp("updated_at"));
                 cart.setCreated_at(result.getTimestamp("created_at"));
+                Pod pod = podDB.get(cart.getPodId());
+                cart.setPod(pod);
                 carts.add(cart);
             }
         } catch (SQLException ex) {
@@ -88,6 +96,7 @@ public class CartDBContext extends DBContext<Cart> {
     @Override
     public Cart get(int id) {
         ArrayList<Cart> carts = new ArrayList<>();
+        PodDBContext podDB = new PodDBContext();
         CategoryDBContext categoryDB = new CategoryDBContext();
         String sql = "SELECT [id]\n"
                 + "      ,[userId]\n"
@@ -109,6 +118,8 @@ public class CartDBContext extends DBContext<Cart> {
                 cart.setQuantity(result.getInt("quantity"));
                 cart.setUpdated_at(result.getTimestamp("updated_at"));
                 cart.setCreated_at(result.getTimestamp("created_at"));
+                Pod pod = podDB.get(cart.getPodId());
+                cart.setPod(pod);
                 return cart;
             }
         } catch (SQLException ex) {
@@ -122,6 +133,7 @@ public class CartDBContext extends DBContext<Cart> {
     
     public Cart findByPodUser(int podId, int userId) {
         ArrayList<Cart> carts = new ArrayList<>();
+        PodDBContext podDB = new PodDBContext();
         CategoryDBContext categoryDB = new CategoryDBContext();
         String sql = "SELECT [id]\n"
                 + "      ,[userId]\n"
@@ -144,6 +156,8 @@ public class CartDBContext extends DBContext<Cart> {
                 cart.setQuantity(result.getInt("quantity"));
                 cart.setUpdated_at(result.getTimestamp("updated_at"));
                 cart.setCreated_at(result.getTimestamp("created_at"));
+                Pod pod = podDB.get(cart.getPodId());
+                cart.setPod(pod);
                 return cart;
             }
         } catch (SQLException ex) {
@@ -158,10 +172,9 @@ public class CartDBContext extends DBContext<Cart> {
                 + "           ([userId]\n"
                 + "           ,[podId]\n"
                 + "           ,[quantity]\n"
-                + "           ,[created_at])\n"
+                + "           ,[created_at]\n"
                 + "           ,[updated_at])\n"
-                + "     VALUES\n"
-                + "           (?,?,?,?,?)";
+                + "     VALUES(?,?,?,?,?)";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
@@ -196,19 +209,15 @@ public class CartDBContext extends DBContext<Cart> {
     @Override
     public void update(Cart model) {
         String sql = "UPDATE [cart]\n"
-                + "        SET [userId] = ?\n"
-                + "           ,[podId] = ?\n"
-                + "           ,[quantity] = ?\n"
+                + "        SET [quantity] = ?\n"
                 + "           ,[updated_at] = ?\n"
                 + "     WHERE id = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
-            statement.setInt(1, model.getUserId());
-            statement.setInt(2, model.getPodId());
-            statement.setInt(3, model.getQuantity());
-            statement.setTimestamp(4, model.getUpdated_at());
-            statement.setInt(1, model.getId());
+            statement.setInt(1, model.getQuantity());
+            statement.setTimestamp(2, model.getUpdated_at());
+            statement.setInt(3, model.getId());
             statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CartDBContext.class.getName()).log(Level.SEVERE, null, ex);

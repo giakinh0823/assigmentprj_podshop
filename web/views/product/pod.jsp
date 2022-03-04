@@ -153,6 +153,7 @@
             
             const addToCart = (podId) => {
                 console.log(podId);
+                $("#cart-quantity").removeClass("hidden")
                 const data = {
                     podId: podId,
                     quantity: 1,

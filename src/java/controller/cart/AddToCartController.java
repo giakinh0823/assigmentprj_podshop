@@ -64,11 +64,14 @@ public class AddToCartController extends HttpServlet {
             if (user != null) {
                 cart.setUserId(user.getId());
                 CartDBContext cartDB = new CartDBContext();
-                Cart old_cart = cartDB.findByPodUser(podId, user.getId());
-                cart.setQuantity(old_cart.getQuantity() + quantity);
                 if (!isExit) {
                     cartDB.insert(cart);
                 } else {
+                    Cart old_cart = cartDB.findByPodUser(podId, user.getId());
+                    if (old_cart != null) {
+                        cart.setQuantity(old_cart.getQuantity() + quantity);
+                        cart.setId(old_cart.getId());
+                    }   
                     cartDB.update(cart);
                 }
             }

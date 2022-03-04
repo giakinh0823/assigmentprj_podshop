@@ -82,8 +82,19 @@
                                     <script>
                                         $("#button-minus-" +${cart.pod.id}).on("click", function (e) {
                                             let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
-                                            if ( quantity - 1 > 0) {
+                                            if ( quantity - 1 >= 0) {
                                                 $("#quantity-" +${cart.pod.id}).text(quantity - 1);
+                                                $.ajax({
+                                                    method: "POST",
+                                                    url: "/carts/update",
+                                                    data: {id: ${cart.pod.id}, quantity: quantity-1},
+                                                }).done(function(data){
+                                                    if (data?.detailMessage) {
+                        
+                                                    }else{
+                                                       $("#cart-quantity").text(data);
+                                                    }
+                                                })
                                             } else {
                                                 $("#quantity-" +${cart.pod.id}).text(0);
                                             }
@@ -91,8 +102,19 @@
 
                                         $("#button-plus-" +${cart.pod.id}).on("click", function (e) {
                                             let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
-                                            if (quantity + 1 < ${cart.pod.quantity}) {
+                                            if (quantity + 1 <= ${cart.pod.quantity}) {
                                                 $("#quantity-" +${cart.pod.id}).text(quantity + 1);
+                                                $.ajax({
+                                                    method: "POST",
+                                                    url: "/carts/update",
+                                                    data: {id: ${cart.pod.id}, quantity: quantity+1},
+                                                }).done(function(data){
+                                                    if (data?.detailMessage) {
+                        
+                                                    }else{
+                                                       $("#cart-quantity").text(data);
+                                                    }
+                                                })
                                             } else {
                                                 $("#quantity-" +${cart.pod.id}).text(${pod.quantity});
                                             }
