@@ -9,6 +9,7 @@ import dal.cart.CartDBContext;
 import dal.product.GroupDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,20 +41,21 @@ public class CartController extends HttpServlet {
             }
         }
         int quantity = 0;
-        double totalPrice = 0;
-        double realPrice = 0;
+        BigDecimal totalPrice = new BigDecimal(0);
+        BigDecimal realPrice =  new BigDecimal(0);
         for (Cart cart : carts) {
             quantity += cart.getQuantity();
-            totalPrice += cart.getQuantity() * cart.getPod().getPrice();
+            totalPrice = totalPrice.add(new BigDecimal((cart.getQuantity() * cart.getPod().getPrice())));
             if (cart.getPod().isIsSale()) {
-                realPrice += cart.getQuantity() * cart.getPod().getPrice() - (cart.getPod().getPrice() * (double)cart.getPod().getDiscount()/100);
+                realPrice= realPrice.add(new BigDecimal((cart.getQuantity() * cart.getPod().getPrice() - (cart.getPod().getPrice() * ((double)cart.getPod().getDiscount()/100)))));
             } else {
-                realPrice += cart.getQuantity() * cart.getPod().getPrice();
+                realPrice=realPrice.add(new BigDecimal((cart.getQuantity() * cart.getPod().getPrice())));
             }
         }
         GroupDBContext groupDB = new GroupDBContext();
         ArrayList<Group> groups = groupDB.list();
         request.setAttribute("groups", groups);
+        
         request.setAttribute("carts", carts);
         request.setAttribute("quantity", quantity);
         request.setAttribute("totalPrice", totalPrice);

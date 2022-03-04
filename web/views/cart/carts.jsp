@@ -4,6 +4,7 @@
     Author     : giaki
 --%>
 
+<%@page import="java.math.BigDecimal"%>
 <%@page import="model.auth.User"%>
 <%@page import="model.cart.Cart"%>
 <%@page import="model.product.Category"%>
@@ -25,8 +26,8 @@
             }
             ArrayList<Cart> carts = (ArrayList<Cart>) request.getAttribute("carts");
             Integer quantity = (Integer) request.getAttribute("quantity");
-            Double totalPrice = (Double) request.getAttribute("totalPrice");
-            Double realPrice = (Double) request.getAttribute("realPrice");
+            BigDecimal totalPrice = (BigDecimal) request.getAttribute("totalPrice");
+            BigDecimal realPrice = (BigDecimal) request.getAttribute("realPrice");
         %>
     </head>
     <body>
@@ -150,7 +151,7 @@
                             $("#phi-ship").text(tien);
                         </script>
                     </div>
-                    <form class="space-y" action="#" class="w-96 mt-5">
+                    <form class="space-y" action="/checkout" class="w-96 mt-5" method="post">
                         <h5 class="text-xl font-medium text-gray-900 mb-5">Địa chỉ người nhận</h5>
                         <div>
                             <label for="first_name" class="block mb-3 text-sm font-medium text-gray-900">First name</label>
