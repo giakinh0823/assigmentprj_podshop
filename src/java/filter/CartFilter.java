@@ -28,7 +28,7 @@ import model.cart.Cart;
  *
  * @author giaki
  */
-@WebFilter(filterName = "CartFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "CartFilter", urlPatterns = {"/*","/pods/*"})
 public class CartFilter implements Filter {
 
     private static final boolean debug = true;

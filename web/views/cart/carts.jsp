@@ -82,43 +82,43 @@
                                     </div>
                                     <script>
                                         $("#button-minus-" +${cart.pod.id}).on("click", function (e) {
-                                            let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
-                                            if ( quantity - 1 >= 0) {
-                                                $("#quantity-" +${cart.pod.id}).text(quantity - 1);
-                                                $.ajax({
-                                                    method: "POST",
-                                                    url: "/carts/update",
-                                                    data: {id: ${cart.pod.id}, quantity: quantity-1},
-                                                }).done(function(data){
-                                                    if (data?.detailMessage) {
-                        
-                                                    }else{
-                                                       $("#cart-quantity").text(data);
-                                                    }
-                                                })
-                                            } else {
-                                                $("#quantity-" +${cart.pod.id}).text(0);
-                                            }
+                                        let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
+                                        if (quantity - 1 >= 0) {
+                                        $("#quantity-" +${cart.pod.id}).text(quantity - 1);
+                                        $.ajax({
+                                        method: "POST",
+                                                url: "/carts/update",
+                                                data: {id: ${cart.pod.id}, quantity: quantity - 1},
+                                        }).done(function(data){
+                                        if (data?.detailMessage) {
+
+                                        } else{
+                                        $("#cart-quantity").text(data);
+                                        }
+                                        })
+                                        } else {
+                                        $("#quantity-" +${cart.pod.id}).text(0);
+                                        }
                                         })
 
-                                        $("#button-plus-" +${cart.pod.id}).on("click", function (e) {
-                                            let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
-                                            if (quantity + 1 <= ${cart.pod.quantity}) {
-                                                $("#quantity-" +${cart.pod.id}).text(quantity + 1);
-                                                $.ajax({
-                                                    method: "POST",
-                                                    url: "/carts/update",
-                                                    data: {id: ${cart.pod.id}, quantity: quantity+1},
-                                                }).done(function(data){
-                                                    if (data?.detailMessage) {
-                        
-                                                    }else{
-                                                       $("#cart-quantity").text(data);
-                                                    }
-                                                })
-                                            } else {
-                                                $("#quantity-" +${cart.pod.id}).text(${pod.quantity});
-                                            }
+                                                $("#button-plus-" +${cart.pod.id}).on("click", function (e) {
+                                        let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
+                                        if (quantity + 1 <= ${cart.pod.quantity}) {
+                                        $("#quantity-" +${cart.pod.id}).text(quantity + 1);
+                                        $.ajax({
+                                        method: "POST",
+                                                url: "/carts/update",
+                                                data: {id: ${cart.pod.id}, quantity: quantity + 1},
+                                        }).done(function(data){
+                                        if (data?.detailMessage) {
+
+                                        } else{
+                                        $("#cart-quantity").text(data);
+                                        }
+                                        })
+                                        } else {
+                                        $("#quantity-" +${cart.pod.id}).text(${pod.quantity});
+                                        }
                                         })
                                     </script>
                                 </div>
@@ -134,7 +134,7 @@
                         <p class="text-lg font-medium mt-4">Số lượng: ${quantity}</p>
                         <p class="text-lg font-medium mt-2">Tổng tiền chưa discount: <span id="tien-not-discount">${totalPrice}</span></p>
                         <script>
-                            var tien = Number.parseInt($("#tien-not-discount").text());
+                                    var tien = Number.parseInt($("#tien-not-discount").text());
                             tien = tien.toLocaleString('vi', {style: 'currency', currency: 'VND'});
                             $("#tien-not-discount").text(tien);
                         </script>
@@ -151,8 +151,15 @@
                             $("#phi-ship").text(tien);
                         </script>
                     </div>
-                    <form class="space-y" action="/checkout" class="w-96 mt-5" method="post">
-                        <h5 class="text-xl font-medium text-gray-900 mb-5">Địa chỉ người nhận</h5>
+                    <form class="space-y" action="/checkout" class="w-96 mt-5" method="post" id="form-checkout">
+                        <h5 class="text-xl font-medium text-gray-900 mb-5">Thông tin người nhận</h5>
+                        <div id="showErrorForm" class="hidden">
+                            <div id="contentErrorForm" class="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 mb-3" role="alert">
+                            </div>
+                        </div>
+                        <div id="showSuccessForm" class="hidden p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+                            <span id="contentSuccessForm" class="font-medium"></span>
+                        </div>
                         <div>
                             <label for="first_name" class="block mb-3 text-sm font-medium text-gray-900">First name</label>
                             <input type="text" name="first_name" id="first_name" value="${user.first_name}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
@@ -178,7 +185,32 @@
                 </div>
             </div>
         </div>
-
+        <script>
+                $("#form-checkout").on('submit', (e) => {
+                e.preventDefault();
+                const data = {
+                    first_name: $("input[name='first_name']").val(),
+                    last_name: $("input[name='last_name']").val(),
+                    email: $("input[name='email']").val(),
+                    phone: $("input[name='phone']").val(),
+                    address: $("input[name='address']").val(),
+                }
+           
+                $.ajax({
+                    method: "POST",
+                    url: "/checkout",
+                    data: data,
+                }).done(function (data) {
+                    if (data?.detailMessage) {
+                        $("#showSuccessForm").addClass("hidden")
+                        $('#contentErrorForm').text(data?.detailMessage);
+                        $("#showErrorForm").removeClass("hidden")
+                    } else{
+                        location.pathname = "/orders";
+                    }
+                })
+            })
+        </script>
         <jsp:include page="../base/footerImport.jsp" />
     </body>
 </html>
