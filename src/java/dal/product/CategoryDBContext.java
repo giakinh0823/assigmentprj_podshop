@@ -20,21 +20,24 @@ import model.product.Group;
  * @author giaki
  */
 public class CategoryDBContext extends DBContext<Category> {
-    
-    
+
     public ArrayList<Category> findMany(String value, int id) {
         ArrayList<Category> categorys = new ArrayList<>();
-        GroupDBContext groupDB = new GroupDBContext();
-        String sql = "SELECT id, name, groupId FROM [category]\n"
-                + " WHERE name LIKE ? ";
-        if(id!=-1){
-            sql+=" AND groupId = ? ";
+        String sql = "SELECT  [category].[id]\n"
+                + "      ,[category].[name]\n"
+                + "      ,[category].[groupId]\n"
+                + "	 ,[group].[name] as 'groupName'\n"
+                + "  FROM [category]\n"
+                + "  LEFT JOIN [group] ON [group].[id] = [category].[id]\n"
+                + " WHERE [category].[name] LIKE ? ";
+        if (id != -1) {
+            sql += " AND [category].[groupId] = ? ";
         }
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
-            statement.setString(1, "%"+value+"%");
-            if(id!=-1){
+            statement.setString(1, "%" + value + "%");
+            if (id != -1) {
                 statement.setInt(2, id);
             }
             ResultSet result = statement.executeQuery();
@@ -43,7 +46,9 @@ public class CategoryDBContext extends DBContext<Category> {
                 category.setId(result.getInt("id"));
                 category.setName(result.getString("name"));
                 category.setGroupId(result.getInt("groupId"));
-                Group group = groupDB.get(category.getGroupId());
+                Group group = new Group();
+                group.setId(result.getInt("groupId"));
+                group.setName(result.getString("groupName"));
                 category.setGroup(group);
                 categorys.add(category);
             }
@@ -52,13 +57,16 @@ public class CategoryDBContext extends DBContext<Category> {
         }
         return categorys;
     }
-    
-    
-    public ArrayList<Category> getListByGroup(int id){
+
+    public ArrayList<Category> getListByGroup(int id) {
         ArrayList<Category> categorys = new ArrayList<>();
-        GroupDBContext groupDB = new GroupDBContext();
-        String sql = "SELECT id, name, groupId FROM [category]\n"
-                + " WHERE groupId = ?";
+        String sql = "SELECT  [category].[id]\n"
+                + "      ,[category].[name]\n"
+                + "      ,[category].[groupId]\n"
+                + "	  ,[group].[name] as 'groupName'\n"
+                + "  FROM [category]\n"
+                + "  LEFT JOIN [group] ON [group].[id] = [category].[id]\n"
+                + " WHERE [category].[groupId] = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
@@ -69,6 +77,10 @@ public class CategoryDBContext extends DBContext<Category> {
                 category.setId(result.getInt("id"));
                 category.setName(result.getString("name"));
                 category.setGroupId(result.getInt("groupId"));
+                Group group = new Group();
+                group.setId(result.getInt("groupId"));
+                group.setName(result.getString("groupName"));
+                category.setGroup(group);
                 categorys.add(category);
             }
         } catch (SQLException ex) {
@@ -80,8 +92,12 @@ public class CategoryDBContext extends DBContext<Category> {
     @Override
     public ArrayList<Category> list() {
         ArrayList<Category> categorys = new ArrayList<>();
-        GroupDBContext groupDB = new GroupDBContext();
-        String sql = "SELECT id, name, groupId FROM [category]";
+        String sql = "SELECT  [category].[id]\n"
+                + "      ,[category].[name]\n"
+                + "      ,[category].[groupId]\n"
+                + "	  ,[group].[name] as 'groupName'\n"
+                + "  FROM [category]\n"
+                + "  LEFT JOIN [group] ON [group].[id] = [category].[id]";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
@@ -91,7 +107,9 @@ public class CategoryDBContext extends DBContext<Category> {
                 category.setId(result.getInt("id"));
                 category.setName(result.getString("name"));
                 category.setGroupId(result.getInt("groupId"));
-                Group group = groupDB.get(category.getGroupId());
+                Group group = new Group();
+                group.setId(result.getInt("groupId"));
+                group.setName(result.getString("groupName"));
                 category.setGroup(group);
                 categorys.add(category);
             }
@@ -103,20 +121,26 @@ public class CategoryDBContext extends DBContext<Category> {
 
     @Override
     public Category get(int id) {
-        GroupDBContext groupDB = new GroupDBContext();
-        String sql = "SELECT id, name, groupId FROM [category]"
-                + " WHERE id = ?";
+        String sql = "SELECT  [category].[id]\n"
+                + "      ,[category].[name]\n"
+                + "      ,[category].[groupId]\n"
+                + "	  ,[group].[name] as 'groupName'\n"
+                + "  FROM [category]\n"
+                + "  LEFT JOIN [group] ON [group].[id] = [category].[id]\n"
+                + " WHERE [category].[id] = ? ";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                Category category = new Category();
+               Category category = new Category();
                 category.setId(result.getInt("id"));
                 category.setName(result.getString("name"));
                 category.setGroupId(result.getInt("groupId"));
-                Group group = groupDB.get(category.getGroupId());
+                Group group = new Group();
+                group.setId(result.getInt("groupId"));
+                group.setName(result.getString("groupName"));
                 category.setGroup(group);
                 return category;
             }
@@ -193,7 +217,7 @@ public class CategoryDBContext extends DBContext<Category> {
             }
         }
     }
-    
+
     public void deleteByGroup(int id) {
         try {
             String sql = "DELETE FROM [category]\n"
