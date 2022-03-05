@@ -150,7 +150,7 @@
                                 </button>                            
                             </div>
                         </div>
-                        <button id="button-add-to-cart" type="button" class="max-w-lg mt-5 text-white bg-gray-900 hover:bg-gray-900 focus:ring-1 focus:ring-gray-600 font-medium px-15 py-2 text-center text-lg">
+                        <button onclick="addToCart()" id="button-add-to-cart" type="button" class="max-w-lg mt-5 text-white bg-gray-900 hover:bg-gray-900 focus:ring-1 focus:ring-gray-600 font-medium px-15 py-2 text-center text-lg">
                             THÊM VÀO GIỎ HÀNG
                         </button> 
                         <p class="mt-5">Sản phẩm sẽ được giao từ 30 phút - 1 tiếng đối với các đơn hàng nội thành HN và HCM, từ 1-3 ngày đối với các đơn hàng gửi CPN đến các tỉnh thành khác</p>
@@ -189,6 +189,28 @@
         <jsp:include page="../base/footerImport.jsp" />
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script>
+
+            const addToCart = () => {
+                if (Number.parseInt($("#quantity").text()) > 0) {
+                    $("#cart-quantity").removeClass("hidden")
+                    const data = {
+                        podId: ${pod.id},
+                        quantity: Number.parseInt($("#quantity").text()),
+                    }
+                    $.ajax({
+                        method: "POST",
+                        url: "/addCart",
+                        data: data,
+                    }).done(function (data) {
+                        if (data?.detailMessage) {
+
+                        } else {
+                            $("#cart-quantity").text(data);
+                            $("#quantity").text(0);
+                        }
+                    })
+                }
+            }
             const swiper = new Swiper('.swiper', {
 //                direction: 'vertical',
                 loop: true,
@@ -227,5 +249,8 @@
 
             $(".preview").html(`<%=pod.getContent()%>`)
         </script>
+        <div>
+            <jsp:include page="/views/base/footer.jsp" />
+        </div>
     </body>
 </html>

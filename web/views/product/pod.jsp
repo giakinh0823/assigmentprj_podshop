@@ -36,9 +36,6 @@
                         <a href="/pods" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                             ALL
                         </a>
-                        <a href="/pod/sale" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            SALE
-                        </a>
                         <c:forEach items="${groups}" var="group">
                             <a href="/pods?group=${group.getId()}" class="uppercase block py-3 px-4 w-full font-small border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                                 ${group.getName()}
@@ -89,7 +86,7 @@
                         <p class="text-5xl">NOT FOUND</p>
                     </div>
                 </c:if>
-                <div class="grid grid-cols-4 gap-5 <%=pods.size()<=0 ?"hidden": ""%>">
+                <div class="grid grid-cols-4 gap-5 <%=pods.size() <= 0 ? "hidden" : ""%>">
                     <c:forEach items="${pods}" var="pod">
                         <div class="bg-white rounded-lg shadow-md flex flex-col">
                             <a href="/pods/detail?id=${pod.getId()}">
@@ -101,7 +98,7 @@
                                 </a>
                                 <div class="flex justify-between items-center mt-auto">
                                     <span class="text-xl font-medium text-red-500" id="price-${pod.id}">${pod.price}</span>
-                                     <script>
+                                    <script>
                                         var price = Number.parseInt($("#price-${pod.id}").text());
                                         price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
                                         $("#price-${pod.id}").text(price);
@@ -112,7 +109,7 @@
                         </div>
                     </c:forEach> 
                 </div>
-                <div class="mt-10 mb-5 w-full flex justify-center <%=pods.size()<=0 ?"hidden": ""%>">
+                <div class="mt-10 mb-5 w-full flex justify-center <%=pods.size() <= 0 ? "hidden" : ""%>">
                     <nav aria-label="Page navigation example">
                         <ul class="inline-flex -space-x-px">
                             <li>
@@ -149,26 +146,29 @@
                 </div>
             </div>
         </div>
+        <div>
+            <jsp:include page="/views/base/footer.jsp" />
+        </div>
         <script>
-            
+
             const addToCart = (podId) => {
-                console.log(podId);
-                $("#cart-quantity").removeClass("hidden")
-                const data = {
+            console.log(podId);
+            $("#cart-quantity").removeClass("hidden")
+                    const data = {
                     podId: podId,
-                    quantity: 1,
-                }
-                $.ajax({
-                    method: "POST",
+                            quantity: 1,
+                    }
+            $.ajax({
+            method: "POST",
                     url: "/addCart",
                     data: data,
-                }).done(function(data){
-                    if (data?.detailMessage) {
-                        
-                    }else{
-                       $("#cart-quantity").text(data);
-                    }
-                })
+            }).done(function(data){
+            if (data?.detailMessage) {
+
+            } else{
+            $("#cart-quantity").text(data);
+            }
+            })
             }
 
             const categorys = [
@@ -184,23 +184,23 @@
             <%}%>
             ]
 
-            const category = document.getElementById("category");
+                    const category = document.getElementById("category");
             for (var i = 0; i < categorys.length - 1; i++) {
-                category.innerHTML += '<option value="' + categorys[i].id + '">' + categorys[i].name + '</option>';
+            category.innerHTML += '<option value="' + categorys[i].id + '">' + categorys[i].name + '</option>';
             }
 
             $("#group").on("change", function (e) {
-                category.innerHTML = "";
-                category.innerHTML += '<option value="all">Category</option>';
-                categorys.forEach(item => {
-                    if (item.group.id == $("#group").val() || $("#group").val() == "all") {
-                        category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>';
-                    }
-                });
+            category.innerHTML = "";
+            category.innerHTML += '<option value="all">Category</option>';
+            categorys.forEach(item => {
+            if (item.group.id == $("#group").val() || $("#group").val() == "all") {
+            category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>';
+            }
+            });
             })
 
 
-            const url_string = window.location.href;
+                    const url_string = window.location.href;
             const url = new URL(url_string);
             const search = url.searchParams.get("q");
             const paginationLinks = document.querySelectorAll(".pagination-link");
@@ -212,24 +212,24 @@
             if (params?.group){
             $("#group").val(params?.group)
                     category.innerHTML = "";
-                categorys.forEach(item => {
-                if (item.group.id == params?.group || params?.group == "all") {
-                    if (params?.category == item.id){
-                        category.innerHTML += '<option value="' + item.id + '"selected>' + item.name + '</option>'
-                        } else{
-                            category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>'
-                        }
-                    }
-                });
+            categorys.forEach(item => {
+            if (item.group.id == params?.group || params?.group == "all") {
+            if (params?.category == item.id){
+            category.innerHTML += '<option value="' + item.id + '"selected>' + item.name + '</option>'
+            } else{
+            category.innerHTML += '<option value="' + item.id + '">' + item.name + '</option>'
+            }
+            }
+            });
             }
             const page = item.getAttribute("data");
-                params.page = page;
-                const href = new URLSearchParams(params).toString();
-                    item.setAttribute("href", "?" + href);
-                })
+            params.page = page;
+            const href = new URLSearchParams(params).toString();
+            item.setAttribute("href", "?" + href);
+            })
             }
-            
-            
+
+
         </script>
         <jsp:include page="../base/footerImport.jsp" />
     </body>
