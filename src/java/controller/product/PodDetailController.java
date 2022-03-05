@@ -39,6 +39,10 @@ public class PodDetailController extends HttpServlet {
             GroupDBContext groupDB = new GroupDBContext();
             ArrayList<Group> groups = groupDB.list();
             request.setAttribute("groups", groups);
+            
+            ArrayList<Pod> samePods = podDB.findByCategory(pod.getCategory().getId(), 1, 4);
+            request.setAttribute("samePods", samePods);
+            
             request.getRequestDispatcher("/views/product/podDetail.jsp").forward(request, response);
         } catch (Exception ex) {
             Logger.getLogger(controller.admin.product.PodDetailController.class.getName()).log(Level.SEVERE, null, ex);

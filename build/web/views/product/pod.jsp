@@ -88,7 +88,12 @@
                 </c:if>
                 <div class="grid grid-cols-4 gap-5 <%=pods.size() <= 0 ? "hidden" : ""%>">
                     <c:forEach items="${pods}" var="pod">
-                        <div class="bg-white rounded-lg shadow-md flex flex-col">
+                        <div class="bg-white rounded-lg shadow-md flex flex-col relative">
+                            <c:if test="${pod.isSale}">
+                                <span class="absolute -top-5 -right-5 bg-red-600 text-white text-sm flex justify-center text-center font-semibold inline-flex items-center w-10 h-10 rounded-full">
+                                    ${pod.discount}%
+                                </span>
+                            </c:if>
                             <a href="/pods/detail?id=${pod.getId()}">
                                 <img class="rounded-t-lg w-full h-[280px]" src="/assets/images/pods/${pod.getImages().get(pod.getImages().size()-1).getImage()}" alt="product image" />
                             </a>
@@ -96,15 +101,30 @@
                                 <a class="mb-10" href="/pods/detail?id=${pod.getId()}">
                                     <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white" style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">${pod.getName()}</h3>
                                 </a>
-                                <div class="flex justify-between items-center mt-auto">
-                                    <span class="text-xl font-medium text-red-500" id="price-${pod.id}">${pod.price}</span>
+                                <div class="flex justify-center items-end mt-auto">
+                                    <c:choose>
+                                            <c:when test="${pod.isSale}">
+                                                <span class="text-xl line-through font-medium text-gray-900" id="price-not-discount-${pod.id}">${pod.price}</span>
+                                                <span class="ml-2 text-md font-medium text-red-500" id="price-${pod.id}">
+                                                ${pod.price-pod.price*pod.discount/100}
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-xl font-medium text-gray-900" id="price-not-discount-${pod.id}">${pod.price}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        
+                                    </span>
                                     <script>
                                         var price = Number.parseInt($("#price-${pod.id}").text());
                                         price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
                                         $("#price-${pod.id}").text(price);
+                                        
+                                        var discount_price = Number.parseInt($("#price-not-discount-${pod.id}").text());
+                                        discount_price = discount_price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                        $("#price-not-discount-${pod.id}").text(discount_price);
                                     </script>
-                                    <button type="button" onclick="addToCart(${pod.id})" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</button>
                                 </div>
+                                <button type="button" onclick="addToCart(${pod.id})" class="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center">Add to cart</button>
                             </div>
                         </div>
                     </c:forEach> 

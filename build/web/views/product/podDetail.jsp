@@ -3,6 +3,7 @@
     Created on : Mar 2, 2022, 1:58:06 AM
     Author     : giaki
 --%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="model.product.Pod"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -12,6 +13,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%
             Pod pod = (Pod) request.getAttribute("pod");
+            ArrayList<Pod> samePods = (ArrayList<Pod>) request.getAttribute("samePods");
         %>
         <title><%=pod.getName()%></title>
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
@@ -132,9 +134,24 @@
                             <a href="https://www.facebook.com/siunhan2101" class="block">Zalo: 252 CMT8 Q10 HCM 0342065577</a>
                             <a href="https://www.facebook.com/siunhan2101" class="block">Zalo: 117, Đường D1-Biconsi Phú Hòa, Thủ Dầu Một , Bình Dương 0707352299</a> 
                         </div>
-                        <p class="text-4xl text-red-600 font-bold mt-auto" id="price">
-                            <%=pod.getPrice()%>
-                        </p>
+                        <div class="flex">
+                            <c:choose>
+                                <c:when test="${pod.isSale}">
+                                    <p class="text-4xl line-through text-gray-900 font-bold mt-auto" id="price">
+                                        <%=pod.getPrice()%>
+                                    </p>
+                                    <p class="ml-3 text-2xl text-red-600 font-bold mt-auto" id="price-discount">
+                                        <%=pod.getPrice()%>
+                                    </p>
+                                </c:when>
+                                <c:otherwise>
+                                    <p class="text-4xl text-red-600 font-bold mt-auto" id="price">
+                                        <%=pod.getPrice()%>
+                                    </p>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </div>
 
                         <div class="mt-6">
                             <p class="text-md text-gray-500 font-medium mb-3">SỐ LƯỢNG</p>
@@ -186,68 +203,118 @@
                 </div>
             </div>
         </div>
+        <div class="container mx-auto mt-20">
+            <h3 class="text-4xl text-center">SẢN PHẨM TƯƠNG TỰ</h3>
+            <div class="mt-20 w-full">
+                <div class="grid grid-cols-4 gap-6 snap-x">
+                    <c:forEach items="${samePods}" var="pod">
+                        <div class="bg-white rounded-lg shadow-md flex flex-col relative">
+                            <c:if test="${pod.isSale}">
+                                <span class="absolute -top-5 -right-5 bg-red-600 text-white text-sm flex justify-center text-center font-semibold inline-flex items-center w-10 h-10 rounded-full">
+                                    ${pod.discount}%
+                                </span>
+                            </c:if>
+                            <a href="/pods/detail?id=${pod.getId()}">
+                                <img class="rounded-t-lg w-full h-[340px]" src="/assets/images/pods/${pod.getImages().get(pod.getImages().size()-1).getImage()}" alt="product image" />
+                            </a>
+                            <div class="px-5 pb-5 mt-4 flex flex-col flex-1">
+                                <a class="mb-10" href="/pods/detail?id=${pod.getId()}">
+                                    <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white" style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">${pod.getName()}</h3>
+                                </a>
+                                <div class="flex justify-center items-end mt-auto">
+                                    <c:choose>
+                                        <c:when test="${pod.isSale}">
+                                            <span class="text-xl line-through font-medium text-gray-900" id="price-not-discount-${pod.id}">${pod.price}</span>
+                                            <span class="ml-2 text-md font-medium text-red-500" id="price-${pod.id}">
+                                                ${pod.price-pod.price*pod.discount/100}
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-xl font-medium text-gray-900" id="price-not-discount-${pod.id}">${pod.price}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                    </span>
+                                    <script>
+                                        var price = Number.parseInt($("#price-${pod.id}").text());
+                                        price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                        $("#price-${pod.id}").text(price);
+
+                                        var discount_price = Number.parseInt($("#price-not-discount-${pod.id}").text());
+                                        discount_price = discount_price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                        $("#price-not-discount-${pod.id}").text(discount_price);
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+        </div>
         <jsp:include page="../base/footerImport.jsp" />
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script>
+                                        const addToCart = () => {
+                                            if (Number.parseInt($("#quantity").text()) > 0) {
+                                                $("#cart-quantity").removeClass("hidden")
+                                                const data = {
+                                                    podId: ${pod.id},
+                                                    quantity: Number.parseInt($("#quantity").text()),
+                                                }
+                                                $.ajax({
+                                                    method: "POST",
+                                                    url: "/addCart",
+                                                    data: data,
+                                                }).done(function (data) {
+                                                    if (data?.detailMessage) {
 
-            const addToCart = () => {
-                if (Number.parseInt($("#quantity").text()) > 0) {
-                    $("#cart-quantity").removeClass("hidden")
-                    const data = {
-                        podId: ${pod.id},
-                        quantity: Number.parseInt($("#quantity").text()),
-                    }
-                    $.ajax({
-                        method: "POST",
-                        url: "/addCart",
-                        data: data,
-                    }).done(function (data) {
-                        if (data?.detailMessage) {
+                                                    } else {
+                                                        $("#cart-quantity").text(data);
+                                                        $("#quantity").text(0);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                        const swiper = new Swiper('.swiper', {
+                                            //                direction: 'vertical',
+                                            loop: true,
+                                            pagination: {
+                                                el: '.swiper-pagination',
+                                                clickable: true,
+                                            },
+                                            navigation: {
+                                                nextEl: '.swiper-button-next',
+                                                prevEl: '.swiper-button-prev',
+                                            },
+                                            scrollbar: {
+                                                el: '.swiper-scrollbar',
+                                            },
+                                        });
 
-                        } else {
-                            $("#cart-quantity").text(data);
-                            $("#quantity").text(0);
-                        }
-                    })
-                }
-            }
-            const swiper = new Swiper('.swiper', {
-//                direction: 'vertical',
-                loop: true,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                scrollbar: {
-                    el: '.swiper-scrollbar',
-                },
-            });
+                                        var price = <%=pod.getPrice()%>;
+                                        price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                        $("#price").text(price);
 
-            var price = <%=pod.getPrice()%>;
-            price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
-            $("#price").text(price);
+                                        var price_discount = <%=pod.getPrice() - pod.getPrice() * (double) pod.getDiscount() / 100%>;
+                                        price_discount = price_discount.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                        $("#price-discount").text(price_discount);
 
-            $("#button-minus").on("click", function (e) {
-                if (Number.parseInt($("#quantity").text()) - 1 > 0) {
-                    $("#quantity").text(Number.parseInt($("#quantity").text()) - 1);
-                } else {
-                    $("#quantity").text(0);
-                }
-            })
+                                        $("#button-minus").on("click", function (e) {
+                                            if (Number.parseInt($("#quantity").text()) - 1 > 0) {
+                                                $("#quantity").text(Number.parseInt($("#quantity").text()) - 1);
+                                            } else {
+                                                $("#quantity").text(0);
+                                            }
+                                        })
 
-            $("#button-plus").on("click", function (e) {
-                if (Number.parseInt($("#quantity").text()) + 1 <${pod.quantity}) {
-                    $("#quantity").text(Number.parseInt($("#quantity").text()) + 1);
-                } else {
-                    $("#quantity").text(${pod.quantity});
-                }
-            })
+                                        $("#button-plus").on("click", function (e) {
+                                            if (Number.parseInt($("#quantity").text()) + 1 <${pod.quantity}) {
+                                                $("#quantity").text(Number.parseInt($("#quantity").text()) + 1);
+                                            } else {
+                                                $("#quantity").text(${pod.quantity});
+                                            }
+                                        })
 
-            $(".preview").html(`<%=pod.getContent()%>`)
+                                        $(".preview").html(`<%=pod.getContent()%>`)
         </script>
         <div>
             <jsp:include page="/views/base/footer.jsp" />
