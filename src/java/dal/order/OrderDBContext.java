@@ -33,7 +33,8 @@ public class OrderDBContext extends DBContext<Order> {
                 + "      ,[created_at]\n"
                 + "      ,[updated_at]\n"
                 + "  FROM [order]\n"
-                + " WHERE userId = ?";
+                + " WHERE userId = ? \n"
+                + " ORDER BY id DESC";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
@@ -105,10 +106,12 @@ public class OrderDBContext extends DBContext<Order> {
                 + "      ,[stateId]\n"
                 + "      ,[created_at]\n"
                 + "      ,[updated_at]\n"
-                + "  FROM [order]";
+                + "  FROM [order] \n"
+                + " WHERE id = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Order order = new Order();

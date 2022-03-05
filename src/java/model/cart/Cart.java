@@ -5,6 +5,7 @@
  */
 package model.cart;
 
+import java.math.BigDecimal;
 import model.BaseModel;
 import model.auth.User;
 import model.product.Pod;
@@ -60,5 +61,14 @@ public class Cart extends BaseModel{
         this.quantity = quantity;
     }
     
+    public BigDecimal getTotal(){
+        BigDecimal total = new BigDecimal(pod.getPrice()*quantity);
+        return total;
+    }
+    
+    public BigDecimal getRealPrice(){
+        BigDecimal total = new BigDecimal(pod.getPrice()*quantity - (pod.getPrice()*quantity*(double)pod.getDiscount()/100));
+        return total;
+    }
     
 }

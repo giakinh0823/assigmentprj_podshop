@@ -35,6 +35,11 @@
                             ${quantity}
                         </span>
                     </div>
+                    <div class="mr-4 relative" id="carts">
+                        <a href="/orders" class="flex mr-3 text-sm text-gray-700" id="user-menu-button" aria-expanded="false" type="button">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>                        
+                        </a>
+                    </div>
                     <c:if test="${user==null}">
                         <div class="flex items-center">
                             <a href="/login" class="block font-medium text-lg text-gray-700">Login</a>

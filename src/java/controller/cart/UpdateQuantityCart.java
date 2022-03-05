@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import dal.cart.CartDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.auth.User;
 import model.cart.Cart;
+import model.cart.CartResponsive;
 import utils.Validate;
 
 /**
@@ -51,34 +53,43 @@ public class UpdateQuantityCart extends HttpServlet {
                     carts = new ArrayList<Cart>();
                 }
             }
-            
-            int quantity_cart = 0;
 
+            int quantity_cart = 0;
+            BigDecimal totalPrice = new BigDecimal(0);
+            BigDecimal realPrice = new BigDecimal(0);
             for (Cart item : carts) {
-                if(item.getPod().getId()==id){
+                if (item.getPod().getId() == id) {
                     item.setQuantity(quantity);
                 }
                 quantity_cart += item.getQuantity();
+                totalPrice = totalPrice.add(item.getTotal());
+                if (item.getPod().isIsSale()) {
+                    realPrice = realPrice.add(item.getRealPrice());
+                } else {
+                    realPrice = realPrice.add(item.getTotal());
+                }
             }
             session.setAttribute("carts", carts);
-            session.setAttribute("quantity", quantity_cart);
-            String json = new Gson().toJson(quantity_cart);
+            session.setAttribute("quantity", quantity_cart);       
+            CartResponsive cartResponsive = new CartResponsive(quantity_cart, totalPrice, realPrice);
+            String json = new Gson().toJson(cartResponsive);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json);
         } catch (Exception ex) {
-            Logger.getLogger(UpdateQuantityCart.class.getName()).log(Level.SEVERE, null, ex);
+            String json = new Gson().toJson(new Error(ex.getMessage()));
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json);
         }
     }
 
-  
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-   
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -82,43 +82,56 @@
                                     </div>
                                     <script>
                                         $("#button-minus-" +${cart.pod.id}).on("click", function (e) {
-                                        let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
-                                        if (quantity - 1 >= 0) {
-                                        $("#quantity-" +${cart.pod.id}).text(quantity - 1);
-                                        $.ajax({
-                                        method: "POST",
-                                                url: "/carts/update",
-                                                data: {id: ${cart.pod.id}, quantity: quantity - 1},
-                                        }).done(function(data){
-                                        if (data?.detailMessage) {
+                                            let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
+                                            if (quantity - 1 >= 0) {
+                                                $("#quantity-" +${cart.pod.id}).text(quantity - 1);
+                                                $.ajax({
+                                                    method: "POST",
+                                                    url: "/carts/update",
+                                                    data: {id: ${cart.pod.id}, quantity: quantity - 1},
+                                                }).done(function(data){
+                                                    if (data?.detailMessage) {
 
-                                        } else{
-                                        $("#cart-quantity").text(data);
-                                        }
-                                        })
-                                        } else {
-                                        $("#quantity-" +${cart.pod.id}).text(0);
-                                        }
+                                                    } else{
+                                                        $("#cart-quantity").text(data?.quantity);
+                                                        var price_not_discount = data?.totalPrice;
+                                                        var price_da_discount = data?.realPrice;
+                                                        price_not_discount = price_not_discount.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                                        price_da_discount = price_da_discount.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                                        $("#tien-not-discount").text(price_not_discount);
+                                                        $("#tien-da-discount").text(price_da_discount);
+                                                    }
+                                                })
+                                            } else {
+                                                $("#quantity-" +${cart.pod.id}).text(0);
+                                            }
                                         })
 
-                                                $("#button-plus-" +${cart.pod.id}).on("click", function (e) {
-                                        let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
-                                        if (quantity + 1 <= ${cart.pod.quantity}) {
-                                        $("#quantity-" +${cart.pod.id}).text(quantity + 1);
-                                        $.ajax({
-                                        method: "POST",
-                                                url: "/carts/update",
-                                                data: {id: ${cart.pod.id}, quantity: quantity + 1},
-                                        }).done(function(data){
-                                        if (data?.detailMessage) {
+                                        $("#button-plus-" +${cart.pod.id}).on("click", function (e) {
+                                            let quantity = Number.parseInt($("#quantity-" +${cart.pod.id}).text());
+                                            if (quantity + 1 <= ${cart.pod.quantity}) {
+                                            $("#quantity-" +${cart.pod.id}).text(quantity + 1);
+                                                $.ajax({
+                                                    method: "POST",
+                                                    url: "/carts/update",
+                                                    data: {id: ${cart.pod.id}, quantity: quantity + 1},
+                                                }).done(function(data){
+                                                    console.log(data);
+                                                    if (data?.detailMessage) {
 
-                                        } else{
-                                        $("#cart-quantity").text(data);
-                                        }
-                                        })
-                                        } else {
-                                        $("#quantity-" +${cart.pod.id}).text(${pod.quantity});
-                                        }
+                                                    } else{
+                                                        $("#cart-quantity").text(data?.quantity);
+                                                        var price_not_discount = data?.totalPrice;
+                                                        var price_da_discount = data?.realPrice;
+                                                        price_not_discount = price_not_discount?.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                                        price_da_discount = price_da_discount?.toLocaleString('vi', {style: 'currency', currency: 'VND'});
+                                                        $("#tien-not-discount").text(price_not_discount);
+                                                        $("#tien-da-discount").text(price_da_discount);
+                                                    }
+                                                })
+                                            } else {
+                                                $("#quantity-" +${cart.pod.id}).text(${pod.quantity});
+                                            }
                                         })
                                     </script>
                                 </div>
@@ -134,7 +147,7 @@
                         <p class="text-lg font-medium mt-4">Số lượng: ${quantity}</p>
                         <p class="text-lg font-medium mt-2">Tổng tiền chưa discount: <span id="tien-not-discount">${totalPrice}</span></p>
                         <script>
-                                    var tien = Number.parseInt($("#tien-not-discount").text());
+                            var tien = Number.parseInt($("#tien-not-discount").text());
                             tien = tien.toLocaleString('vi', {style: 'currency', currency: 'VND'});
                             $("#tien-not-discount").text(tien);
                         </script>

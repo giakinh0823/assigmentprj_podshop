@@ -103,7 +103,11 @@ public class CheckoutController extends HttpServlet {
                     orderDetail.setOrderId(order.getId());
                     orderDetail.setPodId(cart.getPod().getId());
                     orderDetail.setPrice(cart.getPod().getPrice());
-                    orderDetail.setDiscount(cart.getPod().getDiscount());
+                    if(cart.getPod().isIsSale()){
+                        orderDetail.setDiscount(cart.getPod().getDiscount());
+                    }else{
+                        orderDetail.setDiscount(0);
+                    }
                     orderDetail.setQuantity(cart.getQuantity());
                     orderDetail.setCreated_at(created_at);
                     orderDetail.setUpdated_at(updated_at);
@@ -115,8 +119,8 @@ public class CheckoutController extends HttpServlet {
             }
             
             OrderDBContext new_orderDB = new OrderDBContext();
-            order = new_orderDB.get(order.getId());
-            
+            Order new_order = new_orderDB.get(order.getId());
+                       
             session.removeAttribute("quantity");
             session.removeAttribute("carts");
             
@@ -124,11 +128,11 @@ public class CheckoutController extends HttpServlet {
             if(orders==null){
                 orders = new ArrayList<>();
             }
-            orders.add(order);
-            
+            orders.add(new_order);
             if(user!=null){
                 orders = new_orderDB.findByUser(user.getId());
             }
+            
             session.setAttribute("orders", orders);
 
             String json = new Gson().toJson("Order success!");

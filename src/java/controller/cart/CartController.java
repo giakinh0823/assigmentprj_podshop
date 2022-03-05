@@ -45,11 +45,11 @@ public class CartController extends HttpServlet {
         BigDecimal realPrice =  new BigDecimal(0);
         for (Cart cart : carts) {
             quantity += cart.getQuantity();
-            totalPrice = totalPrice.add(new BigDecimal((cart.getQuantity() * cart.getPod().getPrice())));
+            totalPrice = totalPrice.add(cart.getTotal());
             if (cart.getPod().isIsSale()) {
-                realPrice= realPrice.add(new BigDecimal((cart.getQuantity() * cart.getPod().getPrice() - (cart.getPod().getPrice() * ((double)cart.getPod().getDiscount()/100)))));
+                realPrice= realPrice.add(cart.getRealPrice());
             } else {
-                realPrice=realPrice.add(new BigDecimal((cart.getQuantity() * cart.getPod().getPrice())));
+                realPrice=realPrice.add(cart.getTotal());
             }
         }
         GroupDBContext groupDB = new GroupDBContext();

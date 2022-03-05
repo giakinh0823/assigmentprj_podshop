@@ -5,6 +5,7 @@
  */
 package model.order;
 
+import java.math.BigDecimal;
 import model.BaseModel;
 import model.product.Pod;
 
@@ -69,5 +70,14 @@ public class OrderDetail extends BaseModel{
         this.discount = discount;
     }
     
+    public BigDecimal getTotal(){
+        BigDecimal total = new BigDecimal(price*quantity);
+        return total;
+    }
+    
+    public BigDecimal getRealPrice(){
+        BigDecimal total = new BigDecimal(price*quantity - (price*quantity*(double)discount/100));
+        return total;
+    }
     
 }

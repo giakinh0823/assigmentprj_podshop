@@ -5,6 +5,7 @@
  */
 package model.order;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import model.BaseModel;
 
@@ -12,7 +13,8 @@ import model.BaseModel;
  *
  * @author giaki
  */
-public class Order extends BaseModel{
+public class Order extends BaseModel {
+
     private int userId;
     private int customerId;
     private int stateId;
@@ -33,7 +35,7 @@ public class Order extends BaseModel{
 
     public void setOrderDetails(ArrayList<OrderDetail> orderDetails) {
         this.orderDetails = orderDetails;
-    }    
+    }
 
     public int getUserId() {
         return userId;
@@ -58,6 +60,13 @@ public class Order extends BaseModel{
     public void setStateId(int stateId) {
         this.stateId = stateId;
     }
-   
-    
+
+    public BigDecimal total() {
+        BigDecimal total = new BigDecimal(0);
+        for (OrderDetail orderDetail : orderDetails) {
+            total = total.add(orderDetail.getRealPrice());
+        }
+        return total;
+    }
+
 }
