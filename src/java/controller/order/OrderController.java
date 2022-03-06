@@ -39,6 +39,9 @@ public class OrderController extends HttpServlet {
                 for (Order order : orders) {
                     order = orderDB.get(order.getId());
                 }
+                orders.sort((o1, o2) -> {
+                    return -(o1.getId()-o2.getId()) ; 
+                });
                 session.setAttribute("orders", orders);
             }else{
                 orders = new ArrayList<>();

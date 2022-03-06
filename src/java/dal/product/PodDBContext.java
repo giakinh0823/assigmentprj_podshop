@@ -6,6 +6,7 @@
 package dal.product;
 
 import dal.DBContext;
+import dal.order.OrderDetailDBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,7 +46,7 @@ public class PodDBContext extends DBContext<Pod> {
                 + "      ,[group].[id] as 'groupId'\n"
                 + "      ,[group].[name] as 'groupName'\n"
                 + "	 ,[state].[name] as 'stateName'\n"
-                + "      ,ROW_NUMBER() OVER (ORDER BY [pod].[id] ASC) as row_index\n"
+                + "      ,ROW_NUMBER() OVER (ORDER BY [pod].[id] DESC) as row_index\n"
                 + "  FROM [pod]\n"
                 + "  INNER JOIN [category] ON [category].[id] = [pod].[categoryId]\n"
                 + "  INNER JOIN [group] ON [group].[id] = [category].[groupId]\n"
@@ -116,7 +117,7 @@ public class PodDBContext extends DBContext<Pod> {
                 group.setId(result.getInt("groupId"));
                 group.setName(result.getString("groupName"));
                 Category category = new Category();
-                category.setId(pod.getId());
+                category.setId(result.getInt("categoryId"));
                 category.setName(result.getString("categoryName"));
                 category.setGroup(group);
                 pod.setCategory(category);
@@ -179,7 +180,7 @@ public class PodDBContext extends DBContext<Pod> {
     public ArrayList<Pod> findByCategory(int categoryId, int pageIndex, int pageSize) {
         ArrayList<Pod> pods = new ArrayList<>();
         ImageDBContext imageDB = new ImageDBContext();
-        String sql = "SELECT * FROM ([pod].[id]\n"
+        String sql = "SELECT * FROM (SELECT [pod].[id]\n"
                 + "      ,[pod].[name]\n"
                 + "      ,[pod].[brand]\n"
                 + "      ,[pod].[price]\n"
@@ -196,7 +197,7 @@ public class PodDBContext extends DBContext<Pod> {
                 + "      ,[group].[id] as 'groupId'\n"
                 + "      ,[group].[name] as 'groupName'\n"
                 + "	 ,[state].[name] as 'stateName'\n"
-                + "      ,ROW_NUMBER() OVER (ORDER BY [pod].[id] ASC) as row_index\n"
+                + "      ,ROW_NUMBER() OVER (ORDER BY [pod].[id] DESC) as row_index\n"
                 + "  FROM [pod]\n"
                 + "  INNER JOIN [category] ON [category].[id] = [pod].[categoryId]\n"
                 + "  INNER JOIN [group] ON [group].[id] = [category].[groupId]\n"
@@ -227,18 +228,22 @@ public class PodDBContext extends DBContext<Pod> {
                 pod.setUpdated_at(result.getTimestamp("updated_at"));
                 pod.setCategoryId(result.getInt("categoryId"));
                 pod.setStateId(result.getInt("state"));
+                
                 Group group = new Group();
                 group.setId(result.getInt("groupId"));
                 group.setName(result.getString("groupName"));
+                
                 Category category = new Category();
-                category.setId(pod.getId());
+                category.setId(result.getInt("categoryId"));
                 category.setName(result.getString("categoryName"));
                 category.setGroup(group);
                 pod.setCategory(category);
+                
                 State state = new State();
                 state.setId(result.getInt("state"));
                 state.setName(result.getString("stateName"));
                 pod.setState(state);
+                
                 ArrayList<Image> images = imageDB.findByPod(pod.getId());
                 pod.setImages(images);
                 pods.add(pod);
@@ -298,7 +303,7 @@ public class PodDBContext extends DBContext<Pod> {
                 group.setId(result.getInt("groupId"));
                 group.setName(result.getString("groupName"));
                 Category category = new Category();
-                category.setId(pod.getId());
+                category.setId(result.getInt("categoryId"));
                 category.setName(result.getString("categoryName"));
                 category.setGroup(group);
                 pod.setCategory(category);
@@ -334,7 +339,7 @@ public class PodDBContext extends DBContext<Pod> {
                 + "      ,[pod].[updated_at] \n"
                 + "      ,[pod].[categoryId]\n"
                 + "      ,[pod].[state]\n"
-                + "	  ,[category].[name] as 'categoryName'\n"
+                + "	 ,[category].[name] as 'categoryName'\n"
                 + "      ,[group].[id] as 'groupId'\n"
                 + "      ,[group].[name] as 'groupName'\n"
                 + "	  ,[state].[name] as 'stateName'\n"
@@ -367,7 +372,7 @@ public class PodDBContext extends DBContext<Pod> {
                 group.setId(result.getInt("groupId"));
                 group.setName(result.getString("groupName"));
                 Category category = new Category();
-                category.setId(pod.getId());
+                category.setId(result.getInt("categoryId"));
                 category.setName(result.getString("categoryName"));
                 category.setGroup(group);
                 pod.setCategory(category);
@@ -436,7 +441,7 @@ public class PodDBContext extends DBContext<Pod> {
                 group.setId(result.getInt("groupId"));
                 group.setName(result.getString("groupName"));
                 Category category = new Category();
-                category.setId(pod.getId());
+                category.setId(result.getInt("categoryId"));
                 category.setName(result.getString("categoryName"));
                 category.setGroup(group);
                 pod.setCategory(category);
@@ -576,7 +581,9 @@ public class PodDBContext extends DBContext<Pod> {
     @Override
     public void delete(int id) {
         ImageDBContext imageDB = new ImageDBContext();
+        OrderDetailDBContext orderDetailDB = new OrderDetailDBContext();
         imageDB.deleteByPod(id);
+        orderDetailDB.deleteByPod(id);
         try {
             String sql = "DELETE FROM [pod]\n"
                     + "WHERE id = ? ";

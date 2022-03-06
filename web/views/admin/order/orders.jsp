@@ -59,7 +59,7 @@
                                             <span class="text-lg font-medium ml-10">Thời gian: <fmt:formatDate pattern = "yyyy-MM-dd hh:mm:ss" value = "${order.created_at}"/></span>
                                         </div>
                                         <div class="ml-10">
-                                            <span class="text-lg font-medium">Tổng tiền: <span id="total-${order.id}">${order.total()}</span>
+                                            <span class="text-lg font-medium">Tổng tiền: <span class="text-blue-500" id="total-${order.id}">${order.total()}</span>
                                                 <script>
                                                     var price = Number.parseInt($("#total-${order.id}").text());
                                                     price = price.toLocaleString('vi', {style: 'currency', currency: 'VND'});
@@ -84,10 +84,13 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <button onclick="openTable(${order.id})" class="flex text-gray-500 hover:bg-gray-100" aria-expanded="false" type="button">
+                                            <div class="flex">
+                                                <button onclick="openTable(${order.id})" class="mr-10 flex text-gray-500 hover:bg-gray-100" aria-expanded="false" type="button">
                                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>                                                
                                                 </button>
+                                                <a href="/admin/order/delete?id=${order.id}" class="flex text-red-500 hover:bg-gray-100" aria-expanded="false" type="button">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>                                                
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
