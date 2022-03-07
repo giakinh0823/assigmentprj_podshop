@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,7 +13,9 @@
         <title>Login Page</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://unpkg.com/flowbite@1.3.4/dist/flowbite.min.css" />
-
+        <%
+            String error = (String) request.getAttribute("error");
+        %>
     </head>
     <body>
         <div class="w-full min-h-screen bg-white flex justify-center items-center">
@@ -21,6 +24,13 @@
                     <div class="mb-10 text-center">
                         <h3 class="text-5xl">Login</h3>
                     </div>
+                    <c:if test="${error!=null}">
+                        <div id="showErrorForm" class="mb-6">
+                            <div id="contentErrorForm" class="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 mb-3" role="alert">
+                                ${error}
+                            </div>
+                        </div>
+                    </c:if>
                     <div class="mb-6 w-full">
                         <label for="username" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
                         <input type="text" name="username" id="username" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name@flowbite.com" required>

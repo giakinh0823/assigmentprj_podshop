@@ -45,7 +45,7 @@
                         <input type="password" id="confirm_password" name="confirm_password" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                     </div>
                     <div class="mb-6 w-full">
-                        <label for="phone" class="block mb-2 text-sm font-medium text-gray-900">Confirm password</label>
+                        <label for="phone" class="block mb-2 text-sm font-medium text-gray-900">Phone</label>
                         <input type="text" id="phone" name="phone" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                     </div>
                     <div class="mb-6 w-full">
@@ -112,7 +112,7 @@
                     } else{
                         location.pathname = "/login";
                         $("#showErrorForm").addClass("hidden")
-                        $('#contentSuccessForm').text("Update success")
+                        $('#contentSuccessForm').text("Sigup success")
                         $("#showSuccessForm").removeClass("hidden")
                    }
                 })
