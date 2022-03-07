@@ -62,7 +62,7 @@
     </style>
     <body>
         <jsp:include page="/views/base/header.jsp" />
-        <div class="w-full h-[430px]">
+        <div class="w-full h-[480px]">
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">

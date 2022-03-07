@@ -24,6 +24,8 @@ import utils.Validate;
  * @author giaki
  */
 public class UserController extends BaseAuthAdminController {
+    
+     private final Validate validate = new Validate();
 
     @Override
     protected boolean isPermissionGet(HttpServletRequest request) {

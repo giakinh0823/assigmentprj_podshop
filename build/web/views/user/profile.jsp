@@ -59,6 +59,7 @@
                 <div id="showSuccessForm" class="hidden p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
                     <span id="contentSuccessForm" class="font-medium"></span>
                 </div>
+                <input name="id" value="${user.id}" type="hidden"/>
                 <div class="mb-6">
                     <label for="username" class="block mb-2 text-sm font-medium text-gray-900">username</label>
                     <input class="disabled bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -115,7 +116,8 @@
             $("#form-profile-edit").on('submit', (e) => {
             e.preventDefault();
             const data = {
-            email: $("input[name='email']").val(),
+                    id: $("input[name='id']").val(),
+                    email: $("input[name='email']").val(),
                     phone: $("input[name='phone']").val(),
                     first_name: $("input[name='first_name']").val(),
                     last_name: $("input[name='last_name']").val(),

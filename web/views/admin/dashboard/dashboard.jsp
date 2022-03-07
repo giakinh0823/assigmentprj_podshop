@@ -70,6 +70,8 @@
         var quantity = 0;
         var total = 0;
         <c:forEach items="${orders}" var="order">
+        var quantityOrder = 0;
+        var totalOrder = 0;
         var order = {
             id: ${order.id},
             date: new Date("${order.created_at}"),
@@ -81,6 +83,8 @@
             <c:forEach items="${order.orderDetails}" var="orderDetail">
         total += ${orderDetail.getRealPrice()};
         quantity += ${orderDetail.quantity};
+        totalOrder += ${orderDetail.getRealPrice()};
+        quantityOrder += ${orderDetail.quantity};
         order.orderDetails.push({
             id: ${orderDetail.id},
             quantity: ${orderDetail.quantity},
@@ -90,8 +94,8 @@
             realPrice: ${orderDetail.getRealPrice()}
         })
             </c:forEach>
-        dataOrdersTotal[new Date("${order.created_at}").getMonth()] += total;
-        dataOrdersQuantity[new Date("${order.created_at}").getMonth()] += quantity;
+        dataOrdersTotal[new Date("${order.created_at}").getMonth()] += totalOrder;
+        dataOrdersQuantity[new Date("${order.created_at}").getMonth()] += quantityOrder;
         var totalPrice = total;
         totalPrice = totalPrice.toLocaleString('vi', {style: 'currency', currency: 'VND'});
         $("#total").text(totalPrice);
